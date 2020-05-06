@@ -1,0 +1,3975 @@
+
+\documentclass{report}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{enumitem}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz-cd}
+
+
+
+\title{Linear Algebra and Groups MATH40003}
+\author{}
+\date{November 2019}
+\newtheorem{theorem}{Theorem}[subsection]
+\newtheorem*{corollary}{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\renewcommand{\v}[1]{\mathbf{#1}}
+\renewcommand*{\thesection{\arabic{section}}}
+
+
+\providecommand{\varitem}{} % to keep LaTeX quiet
+\makeatletter
+\newenvironment{axioms}[1]
+ {\renewcommand\varitem[1]{\item[\textbf{#1\arabic{enumi}\rlap{$##1$}.}]%
+    \edef\@currentlabel{#1\arabic{enumi}{$##1$}}}%
+  \enumerate[label=\textbf{#1\arabic*.}, ref=#1\arabic*]}
+ {\endenumerate}
+\makeatother
+\providecommand{\vectii}[2]{\begin{pmatrix}#1\\#2\end{pmatrix}}
+\providecommand{\vectiii}[3]{\begin{pmatrix}#1\\#2\\#3\end{pmatrix}}
+\providecommand{\vectiv}[4]{\begin{pmatrix}#1\\#2\\#3\\#4\end{pmatrix}}
+
+\counterwithin*{equation}{subsection}
+\counterwithin*{equation}{section}
+
+\begin{document}
+\maketitle
+\chapter{Linear Algebra}
+\section{Introduction}
+Often the first step to tackling a problem is to "Linearise" it, so to put it into the form of a system of linear equations, like a Taylor Series:
+\[f(x) \approx f(a) + (x-a)f'(a) + \cdots, |x-a| \leq 1\]
+
+A function or 'Transformation' of $L$ is linear if $ L(af_1 + bf_2) = aLf_1 + bLf_2$\\
+This makes linear transformations easier to handle than non-linear ones. In the linear algebra part of this course we will look at the maths developed to deal with linear transformations.
+
+\section{Systems of Linear Equations and Matrices}
+\subsection{Introduction}
+A system of linear equations is a set of equations in the same variables. For example:
+\[\begin{split}
+-x+y+2z &=2\\
+3x -y+z &=6\\
+-x +3y + 4z&=4\\
+\end{split}\]
+
+In general, a system of $m$ linear equations in $n$ unknowns will have the form:
+
+\[\begin{split}
+a_{11} x_1 + a_{12} x_2+\cdots+a_{1n}x_n&= b_1\\
+a_{21}x_1+a_{22}x_2+\cdots+a_{2n}x_n&= b_2\\
+\vdots & \vdots \\
+a_{m1}x_1+\cdots+a_{mn}x_n&= b_m
+\end{split}\]
+\begin{definition}
+Given a system of $m$ linear equations in $n$ unknowns, we can write this in matrix form $Ax=b$ where:
+\end{definition}
+\[
+x=\begin{pmatrix}
+x_1\\
+\vdots \\
+x_n
+\end{pmatrix} b = \begin{pmatrix}
+b_1\\
+\vdots \\
+b_n
+\end{pmatrix}
+A = \begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\cdots & \cdots & \ddots & \vdots \\
+ a_{m1} & \cdots & \cdots & a_{mn}
+\end{pmatrix}
+\]
+We can use an \emph{Augmented Matrix} to represent the system of linear equations:
+\[
+\left(
+\begin{array}{rrrr|r}
+a_{11} & a_{12} & \cdots & a_{1n} & b_1 \\
+a_{21} & a_{22} & \cdots & a_{2n} & b_2 \\
+\vdots & \vdots & \ddots & \vdots & \vdots \\
+a_{m1} & \cdots & \cdots & a_{mn} & b_m
+\end{array}
+\right)
+(A | b)
+\]
+\begin{example}
+\[
+\begin{split}
+w-x+y+2z &=2\\
+w+3x-y+z&=6
+\end{split}
+\]
+As an augmented matrix:
+\[
+\left(
+\begin{array}{rrrr|r}
+1&-1&1&2&2\\
+1&3&-1&1&6
+\end{array}
+\right)
+\]
+\end{example}
+\begin{remark}
+Matrix Multiplication is defined precisely so that the above equations work out.
+\end{remark}
+\subsection{Matrix Algebra}
+Here's a quick recap/introduction (N.B, we will mainly be working in $\mathbb{R}$ but any field $\mathbb{F}$ will do).\par
+If we want to add matrices, they need to have the same size and shape.
+\begin{definition}
+Given \[
+\begin{split}
+A &= [a_{ij}]_{m \times n} \in M_{m \times n}(\mathbb{R})\\
+B &= [b_{ij}]_{m \times n} \in M_{m \times n}(\mathbb{R})
+\end{split}
+\]
+Then define
+\[ A + B = [a_{ij} + b_{ij}]_{m \times n}\]
+\end{definition}
+We can also multiply by a scalar product.
+\begin{definition}
+Let $A = [a_{ij}]_{m \times n} \in M_{m \times n}(\mathbb{R})$ and $\lambda \in \mathbb{R}$. Then the \emph{Scalar multiple of $A$ by $\lambda$} denoted by $\lambda A$ is the matrix
+\[\lambda A = [\lambda a_{ij}]_{m \times n}\].
+\end{definition}
+We can also multiply matrices together.
+\begin{definition}
+Let $A = [a_{ij}]_{p \times q} \in M_{p \times q}(\mathbb{R})$ and $B= [b_{ij}]_{q \times r} \in M_{q \times r}(\mathbb{R})$. Then the \emph{matrix product $AB$} is the matrix $C$ where:
+\[C = [c_{ij}]_{p \times r}, c_{ij} = \sum_{k=1}^q a_{ik}b_{kj}\]
+\end{definition}
+\begin{theorem}
+Matrix multiplication is associative. I.e. for matrices $A, B, C$, then $(AB)C = A(BC)$
+\end{theorem}
+\emph{Proof:} for $A(BC)$ to be defined, we require the respective orders to be $m \times n, n \times p, p \times q$, in which case the product $A(BC)$ is also defined (and vice versa). Consider the $ij^{th}$ element of $A(BC)$.
+\[
+\begin{split}
+[A(BC)]_{ij} &= \sum_{k=1}^n a_{ik}[BC]_{kj}\\
+&=\sum_{k=1}^n\sum_{t=1}^p a_{ik}b_{kt}c_{tj}\\
+&=\sum_{t=1}^{p}\left(\sum_{k=1}^n a_{ik}b_{kt}\right)c_{tj}\\
+&=\sum_{t=1}^p [AB]_{it}c_{tj}\\
+&=[(AB)C]_{ij}
+\end{split}
+\]
+So $A(BC)=(AB)C$ as every $ij^{th}$ element is equal.
+\subsection{Row Operations}
+\begin{example}
+The augmented matrix for the following system of linear equations
+\[ \begin{split}
+-x+y+2z&=2\\
+3x-y+z&=6\\
+-x+3y+4z&=4
+\end{split} \]
+is
+\[ \left(
+\begin{array}{rrr|r}
+-1&1&2&2\\
+3&-1&1&6\\
+-1&3&4&4
+\end{array} \right) \]
+\end{example}
+You will already know how to solve system of linear equations (simultaneous equations). There are three different operations:
+\begin{itemize}
+\item Multiply an equation by a non-zero factor;
+\item Add a multiple of one equation to another;
+\item Swap equations around.
+\end{itemize}
+
+In the augmented matrix we can do these operations more efficiently.
+\begin{definition}
+\emph{Elementary row operations} are performed on an augmented matrix. The allowed options for these operations are detailed in the list above.
+\end{definition}
+\begin{remark}
+Performing row operations preserves the solutions of a linear system, and every row operation has an inverse.
+\end{remark}
+\begin{example} Consider the following system of linear equations in augmented matrix form:\\
+\begin{center}
+\begin{tabular}{c|c}%table start
+\parbox{3.8cm}{\begin{align}
+3x-2y+z&=-6 \label{eq:one} \\
+4x+6y-3z&=5\label{eq:two}\\
+-4x+4y &=12 \label{eq:three}
+\end{align}}&$\left( \begin{array}{ccc|c}
+3&-2&1&6\\
+4&6&-3&5\\
+-4&4&0&12
+\end{array} \right) $ \\
+Multiply \eqref{eq:three} by $\frac{1}{4}$ & $\xrightarrow{R_3 \rightarrow R_3 \times \frac{1}{4}}$\\
+\parbox{3.8cm}{\begin{equation}
+-x+y=3 \label{eq:four}
+\end{equation}} & $\left( \begin{array}{ccc|c}
+3&-2&1&6\\
+4&6&-3&5\\
+-1&1&0&3
+\end{array} \right) $ \\
+Add $3 \times \eqref{eq:four}$ to \eqref{eq:one} and $4 \times \eqref{eq:four}$ to \eqref{eq:two} & $\xrightarrow[R_2 \rightarrow R_2 + 4R_3]{R_1 \rightarrow R_1 + 3R_3}$\\
+\parbox{3.8cm}{\begin{align}
+y+z&=3\label{eq:five}\\
+10y-3z&=17 \label{eq:six}
+\end{align}}&$\left( \begin{array}{ccc|c}
+0&1&1&3\\
+0&10&-3&17\\
+-1&1&0&3
+\end{array} \right) $ \\
+Take $10 \times \eqref{eq:five}$ from \eqref{eq:six} & $\xrightarrow{R_2 \rightarrow R_2-10R_1}$\\
+\parbox{3.8cm}{\begin{equation*}
+-13z=-13
+\end{equation*}} & $\left( \begin{array}{ccc|c}
+0&1&1&3\\
+0&0&-13&-13\\
+-1&1&0&3
+\end{array} \right) $ \\
+So $z = 1$. \newline Plug into \eqref{eq:five} to get & $\xrightarrow{R_2 \rightarrow -\frac{1}{13}R_2}$\\
+$y+1=3$ &$\left( \begin{array}{ccc|c}
+0&1&1&3\\
+0&0&1&1\\
+-1&1&0&3
+\end{array} \right) $ \\
+So $y=2$ \newline Plug into \eqref{eq:four} & $\xrightarrow{R_1 \rightarrow R_1 - R_2}$\\
+$-x + 2 = 3$\newline $x=-1$ &$\left( \begin{array}{ccc|c}
+0&1&0&2\\
+0&0&1&1\\
+-1&1&0&3
+\end{array} \right) $ \\
+& $\xrightarrow{R_3 \rightarrow R_3 - R_1}$\\
+& $\left( \begin{array}{ccc|c}
+0&1&1&3\\
+0&0&1&1\\
+-1&0&0&1
+\end{array} \right) $ \\
+& $\xrightarrow{R_3 \rightarrow -R_3}$\\
+& $\left( \begin{array}{ccc|c}
+0&1&1&3\\
+0&0&1&1\\
+1&0&0&-1
+\end{array} \right) $ \\
+&$\xrightarrow{R_1 \rightarrow R_1 - R_2}$\\
+& $ \left( \begin{array}{ccc|c}
+0&1&0&2\\
+0&0&1&1\\
+1&0&0&-1
+\end{array} \right)$\\
+\end{tabular} %table end
+\renewcommand{\arraystretch}{1} %sets the array stretch back to one
+\end{center}
+\end{example}
+\begin{definition}Two systems of linear equations are \emph{equivalent} if either:
+\begin{itemize}
+\item They are both inconsistent.
+\item The augmented matrix of the first system can be obtained using row operations from the augmented matrix of the second system.
+\end{itemize}
+\end{definition}
+\begin{remark} Equivalently, by Remark 2.3.3, two systems of linear equations are equivalent if and only if they have the same solutions.
+\end{remark}
+If a row consists of mainly 0s and 1s then it is easier to read off solutions.
+\begin{example}
+\begin{tabular}{cc}
+$\left( \begin{array}{ccc|c}
+-2&1&2&2\\
+3&-3&1&5
+\end{array} \right)$ & $ \left( \begin{array}{ccc|c}
+0&1&0&2\\
+0&0&1&5
+\end{array} \right) $\\
+$\downarrow$ &$ \downarrow$ \\
+$ \begin{aligned}
+-2x + y + 2z &= 2\\
+3x - 3y + z &= 5
+\end{aligned}$ & $ \begin{aligned}
+y &=2\\
+z &= 5\\
+\end{aligned}$
+\end{tabular}
+\end{example}
+\begin{definition}
+We say a matrix is in \emph{Echelon form (e.f.)} if it satisfies the following:
+\begin{itemize}
+\item All the zeroes are at the bottom.
+\item The first non-zero entry in each row is 1
+\item The first non-zero entry in each row $i$ is strictly to the left of the first non-zero entry in row $i+1$.
+\end{itemize}
+We say a matrix is in \emph{row reduced echelon form} if it is in echelon form and:
+\begin{itemize}
+\item If the first non-zero entry in row $i$ also appears in column $j$ then every other entry in column $j$ is zero.
+\end{itemize}
+\end{definition}
+\begin{example}
+A matrix in echelon form looks like:
+\[\left(\begin{array}{ccc|c}
+1&1&2&2\\
+0&1&7&12\\
+0&0&1&-10\\
+0&0&0&0\\
+\end{array} \right) \]
+And a matrix in row reduced echelon form looks like:\\
+\[ \left( \begin{array}{ccc|c}
+1&1&0&0\\
+0&0&1&0\\
+0&0&0&1\\
+0&0&0&0
+\end{array} \right) \]
+\end{example}
+\subsection{Elementary Matrices}
+\begin{definition}
+Any matrix that can be obtained from an identity matrix by means of one elementary row operation is in \emph{elementary matrix}.
+\end{definition}
+We have three types: 
+\begin{itemize}
+\item Multiplies a row by a non-zero number:
+\[ E_r(\alpha) = \begin{pmatrix}
+1&0&\cdots&\cdots&0\\
+0&\ddots&&&\vdots\\
+\vdots&&\alpha&&\vdots\\
+\vdots&&&\ddots&\vdots\\
+0&\cdots&\cdots&\cdots&0
+\end{pmatrix} \]
+\item Adds a multiple of row $r$ to row $s$:
+\[ E_{rs}(\alpha) = \bordermatrix{
+&&&&&\cr
+&1&0&\cdots&\cdots&0\cr
+&0&\ddots&&&\vdots\cr
+&\vdots&&\ddots&&\vdots\cr
+s&\vdots&&&1&\alpha\cr
+r&0&\cdots&\cdots&\cdots&1\cr} 
+\]
+\item Swapping row $s$ with row $r$
+\[
+E_{rs} = \bordermatrix{
+&&&&&\cr
+&1&0&\cdots&\cdots&0\cr
+s&\vdots&\ddots&1&&0\cr
+r&0&1&0&&\vdots\cr
+&\vdots&&&\ddots&\vdots\cr
+&0&\cdots&\cdots&\cdots&1\cr
+}
+\]
+\end{itemize}
+\begin{theorem}
+Let $A \in M_{m \times n}(\mathbb{R})$, $E$ an elementary $m \times m$ matrix. The matrix multiplication $EA$ applies the same elementary row operation to $A$ that was performed on $I_m$ to obtain $E$
+\end{theorem}
+\emph{Proof:} Trivial and left as an exercise to the reader :-)
+\subsection{More Matrices}
+\begin{definition} We say a matrix is \emph{square} if it has the same number of columns as it does rows.
+\end{definition}
+\begin{definition}
+A square matrix $A = (a_{ij}) \in M_{n \times n}(\mathbb{F})$ is:
+\begin{itemize}
+\item \emph{Upper triangular} if $a_{ij}=0 $ whenever $i>j$ (zeroes below the diagonal)
+\item \emph{Lower triangular} if $a_{ij}=0$ whenever $i<j$ (zeroes above the diagonal)
+\item \emph{Diagonal} if $a_{ij}=0$ whenever $i \neq j$.
+\end{itemize}
+\end{definition}
+\begin{example}
+\[ \text{U.T}: \begin{pmatrix}
+1&1&2\\
+0&1&7\\
+0&0&1 \end{pmatrix}
+\text{L.T}: \begin{pmatrix}
+3&0&0\\
+2&0&0\\
+0&0&0 \end{pmatrix}
+\text{Diagonal} \begin{pmatrix}
+3&0&0\\
+0&\pi&0\\
+0&0&5 \end{pmatrix}
+\]
+\end{example}
+\begin{definition}
+The $n \times n$ \emph{identity matrix}, denoted $I_n$ has all its diagonal entries equal to one, all other entries equal to zero. It is called the identity matrix because it is the \emph{multiplicative identity} matrix for $M_{n \times n}(\mathbb{F})$. I.e.
+\[ \forall A \in M_{n \times n}(\mathbb{F}): AI_n = I_nA = A\]
+\end{definition}
+\begin{definition}
+If, for $B \in M_{n \times n}(\mathbb{F}), \exists A \in M_{n \times n}(\mathbb{F}): AB=BA=I_n$, then we say $B$ is \emph{invertible}, with \emph{inverse} $A$. We write $A=B^{-1}$
+\end{definition}
+\emph{Note:} not all $n \times n$ matrices are invertible, e.g. $\begin{pmatrix}0&0\\0&0\end{pmatrix}$.
+\begin{definition}
+A matrix without an inverse is called \emph{singular}.
+\end{definition}
+\begin{example}
+$$\text{Let} A=\begin{pmatrix}2&0\\1&-1\end{pmatrix}\\
+\text{Verify} A^{-1} = \begin{pmatrix}\frac{1}{2}&0\\\frac{1}{2}&-1\end{pmatrix}\\
+AA^{-1}=\begin{pmatrix}2&0\\1&-1\end{pmatrix}\begin{pmatrix}\frac{1}{2}&0\\ \frac{1}{2}&-1\end{pmatrix} = \begin{pmatrix}1&0\\0&1\end{pmatrix} $$
+\end{example}
+\begin{theorem}
+\label{th:invuniq}
+The inverse of a given matrix is unique. I.e., suppose $A,B,C \in M_{n \times n}(\mathbb{F})$ such that $AB=BA=I_n$ and $AC=CA=I_n$. Then $B=C$.
+\end{theorem}
+\emph{Proof:} suppose
+\begin{align*}
+AB&=BA=I_n \> \text{and} \> AC=CA=I_n\\
+B&=BI_n \\
+b&=BI_n\\
+&=B(AC)\\
+&=(BA)C\\
+&=I_nC\\
+&=C
+\end{align*}
+\ref{th:invuniq} allows us to talk about \textbf{THE} inverse of a matrix.
+\begin{definition}
+If $A=(a_{ij})_{m \times n}$ then the \emph{transpose of $A$}, $A^T=(a_{ji})_{n \times m}$
+\end{definition}
+\begin{example}
+If \[A= \begin{pmatrix}
+1&0&5\\
+4&2&1
+\end{pmatrix} \text{then } A^T= \begin{pmatrix}
+1&4\\
+0&2\\
+5&1
+\end{pmatrix} \]
+\end{example}
+\begin{corollary}
+Let $A \in M_{n \times n}(\mathbb{R})$ be invertible, then $A^T$ is also invertible. And $(A^T)^{-1} = (A^{-1})^T$
+\end{corollary}
+\emph{Proof:} \begin{align*}
+AA^{-1} &= I_n\\
+(AA^{-1})^T&=I_n^T=I_n\\
+(A^{-1})^TA^T&=I_n
+\end{align*}
+\begin{lemma}
+Let $A \in M_{n \times m}(\mathbb{R}), B \in M_{m \times p}(\mathbb{R})$. Then
+\[ (AB)^T = B^TA^T \]
+\end{lemma}
+\emph{Proof:} First note that $(AB)^T \in M_{p \times n}(\mathbb{R})$. $B^TA^T$ is defined and has order $p \times n$.\\
+Let $A=(a_{ij})$ and $B = (b_{ij})$. Then:
+\begin{itemize}
+    \item the $ji^{th}$ entry of $(AB)^T$ is the $ij^{th}$ entry of $(AB)$ which is $\sum^m_{k = 1}a_{ik}b_{kj}$
+    \item the $ji^{th}$ entry of $B^TA^T$ is 
+    \begin{align*}
+        &\sum^m_{k=1}(b^T)_{jk}(a^T)_{ki}\\
+        &= \sum^m_{k=1} (b^T)_{jk}(a^T)_{ki} = \sum^M_{k=1}a_{ik}b_{kj}
+    \end{align*}
+\end{itemize}
+\subsection{Inverses using row operations}
+We can use an e.r.o to find inverses (if they exist)
+\begin{theorem}
+Every elementary matrix is invertible, and its inverse is an elementary matrix.
+\end{theorem}
+\emph{Proof:} check.
+\begin{itemize}
+    \item $E_r(\alpha)E_r(\alpha^{-1}) = I_n$ and vice versa
+    \item $E_{rs}(\alpha)E_{rs}(-\alpha)=I_n$ and vice versa.
+    \item $E_{rs}E_{rs} = I_n$
+\end{itemize}
+So we have $(E_r(\alpha))^{-1} = E_r(\alpha^{-1}), (E_{rs}(\alpha))^{-1} = E_{rs}(-\alpha)$ and $E_{rs}^{-1}=E_{rs}$
+\begin{theorem}
+If $A \in M_{n \times n}(\mathbb{R})$ can be reduced to $I_n$ by a sequence of elementary row operations, then $A$ is invertible, and its inverse is found by applying the same sequence to $I_n$ 
+\end{theorem}
+\emph{Proof:} Let $E_1, E_2, \cdots, E_k$ be the elementary matrices corresponding to the elementary row ops. So
+\[E_k \cdots E_3E_2E_1A= I_n\]
+The previous theorem states that the $E_i$ are invertible. Recall also that $(AB)^{-1} = B^{-1}A^{-1}$. So:
+\[A=E_1^{-1}E_2^{-1}\cdots E_k^{-1}\]
+This shows that A is a product of invertible matrices, so $A^{-1}$ exists.
+\begin{align*}
+    A^{-1} &= (E_1^{-1} \cdots E_k^{-1})^{-1}\\
+    &=E_k \cdots E_1\\
+    &= E_k\cdots E_1 I_n
+\end{align*}
+which is what you get from applying the row operations to $I_n$
+\begin{example}
+Let
+\[A = \begin{pmatrix}
+1&0&1\\
+1&2&0\\
+3&0&4
+\end{pmatrix} \]
+First, construct an augmented matrix with the identity matrix.
+\[ 
+\left(\begin{array}{ccc|ccc}
+1&0&1&1&0&0\\
+1&2&0&0&1&0\\
+3&0&4&0&0&1
+\end{array}\right)
+\]
+This gives us a good way of keeping track of the e.r.o.'s. We're looking to get the LHS equal to $I_3$ and the RHS will give us $A_{-1}$ \par
+\begin{center}
+    \begin{align*}
+    \xrightarrow{R_3 \rightarrow R_3 - 3R_1}\\
+    \left(\begin{array}{ccc|ccc}
+    1&0&1&1&0&0\\
+    1&2&0&0&1&0\\
+    0&0&1&-3&0&1
+    \end{array}\right)\\
+    \xrightarrow{R_2 \rightarrow R_2-R_1}\\
+    \left(\begin{array}{ccc|ccc}
+    1&0&1&1&0&0\\
+    0&2&-1&-1&1&0\\
+    0&0&1&-3&0&1
+    \end{array}\right)\\
+    \xrightarrow{R_2 \rightarrow R_2 + R_3}\\
+    \left(\begin{array}{ccc|ccc}
+    1&0&1&1&0&0\\
+    0&2&0&-4&1&1\\
+    0&0&1&-3&0&1
+    \end{array}\right)\\
+    \xrightarrow{R_1 \rightarrow R_1-R_3}\\
+    \left(\begin{array}{ccc|ccc}
+    1&0&0&4&0&-1\\
+    0&2&0&-4&1&1\\
+    0&1&1&-3&0&1
+    \end{array}\right)\\
+    \xrightarrow{R_2 \rightarrow \frac{R_2}{2}}\\
+    \left(\begin{array}{ccc|ccc}
+    1&0&0&4&0&-1\\
+    0&1&0&-2&\frac{1}{2}&\frac{1}{2}\\
+    0&0&1&-3&0&1
+    \end{array}\right)
+    \end{align*}
+\end{center}
+\end{example}
+\subsection{Geometric Interpretation}
+As you have seen in the introductory module, vectors are $n \times 1$ matrices and vectors in $\mathbb{R}^2/\mathbb{R}^3$ can be represented as points in 2 or 3 (respectively) dimensional space. In this section we will look at the geometric interpretations of some of the things we have seen so far. \par
+A system of linear equations in $n$ unknowns specifies a set in $n$-space.
+\begin{example}
+Consider 
+\begin{align*}
+    x_1 + x_2 + x_3 &=-1\\
+    2 x_1 + x_3 &=1\\
+    3 x_1 + x_2 &= -4
+\end{align*}
+Using row reduction we get
+\begin{align*}
+    x_1 &= -0.5\\
+    x_2 &= -2.5\\
+    x_3 &=2
+\end{align*}
+This specifies a point. Whereas
+\begin{align*}
+    x_1 + x_2 + x_3 &=-1\\
+    2x_1 + x_3 &=1
+\end{align*}
+Using row reduction we get
+\begin{align*}
+    x_1 &= -2.5 - 0.5x_3\\
+    x_2 &= 1.5 - 0.5x_3
+\end{align*}
+Giving us the line
+\[\begin{pmatrix}
+-2.5 \\ 1.5 \\0
+\end{pmatrix} + \lambda \begin{pmatrix}
+-0.5 \\ -0.5 \\ 1
+\end{pmatrix} \]
+for $ \lambda \in \mathbb{R}$.
+Just taking the first equation 
+\[x_1 + x_2 + x_3 = -1 \]
+gives us a plane with normal $\begin{pmatrix} 1\\1\\1 \end{pmatrix}$
+\end{example}
+We have seen that we can apply matrices to vectors via matrix multiplication, so we can see a matrix $A \in M_{m \times n}(\mathbb{R})$ as a map.
+\begin{align*}
+    A:& \mathbb{R}^n \rightarrow \mathbb{R}^m\\
+    &v \rightarrow Av
+\end{align*}
+We can use matrices to represent many different operations.
+\begin{example}
+Consider $A = \begin{pmatrix}
+5&0\\
+0&5
+\end{pmatrix}$. Then
+\[A\begin{pmatrix}x_1 \\x_2 \end{pmatrix} = \begin{pmatrix}5x_1 \\ 5x_2\end{pmatrix} \]
+so $A$ is a stretch by a factor of 5.
+\end{example}
+\begin{definition}
+Let $T$ be a function from $\mathbb{R}^n$ to $\mathbb{R}^m$, we say $T$ is a \emph{linear transformation} if for every $v_1, v_2 \in \mathbb{R}^n$ and every $\alpha, \beta \in \mathbb{R}$, we have 
+\[T(\alpha v_1 + \beta v_2) = \alpha T(v_1) + \beta T(v_2)\]
+\end{definition}
+\begin{theorem}
+Let $A \in M_{m \times n}(\mathbb{R})$ be seen as a function from $\mathbb{R}^n$ to $\mathbb{R}^m$, then $A$ is a linear transformation.
+\end{theorem}
+\emph{Proof:} let $v_1, v_2 \in \mathbb{R}^n, \alpha, \beta \in \mathbb{R}$. Then
+\begin{align*}
+    A(\alpha v_1 + \beta v_2) &= A(\alpha v_1) + A( \beta V_2)\\
+    & \> \text{By distributivity}\\
+    &= \alpha(Av_1) + \beta(Av_2)
+\end{align*}
+\begin{lemma}
+Let $A \in M_{n \times n}(\mathbb{R})$. The following are equivalent:
+\begin{itemize}
+    \item $A$ is invertible with inverse $A^{-1} = A^T$.
+    \item $AA^T = I_n = A^TA$
+    \item $A$ preserves inner products (i.e. dot products) i.e. $\forall x, y \in \mathbb{R}^n, (Ax) \cdot (Ay) = x \cdot y$
+\end{itemize}
+\end{lemma}
+\emph{Proof:}
+$(1) \iff (2)$ by definition. $(2) \iff (3)$:\par
+First note for $x, y \in \mathbb{R}^n, x\cdot y = x^Ty$ as per intro to maths. So A preserves inner products if and only if:
+\begin{align*}
+    &(Ax) \cdot(Ay) = x\cdot y\\
+    \iff & (Ax)^T(Ay)=x^Ty\\
+    \iff & (Ax)^T(Ay) = x^TI_ny \\
+    \iff & x^T(A^TA)y=x^T I_ny\\
+    \iff & x^T(A^TA-I_n)y = 0
+\end{align*}
+If (2) then $A^TA=I_n$ so $x^T(A^TA-I_n)y=0$ so we can conclude (3) \par
+then if (3), let
+\[x_i = \begin{pmatrix} 0\\ \vdots\\ 1 \\ \vdots\\ 0 \end{pmatrix} \] where the 1 is on the $i^{th}$ row. So for each $x_i$:
+\[x_i^T(A^TA-I_n)y=0\]
+The LHS of which is the $i^{th}$ row of the column vector. So
+\[(A^TA-I_n)y = 0_v \in \mathbb{R}^n \] where $0_v$ is the zero vector for $\mathbb{R}^n$. Now do the same thing choosing $y_j= \begin{pmatrix} 0 \\ \vdots \\ 1 \\ \vdots \\ 0 \end{pmatrix}$ where it's in the $j^{th}$ row. This gives us
+    \[(A^TA-I_n = 0 \in M_{n \times n}(\mathbb{R})\]
+So $A^TA = I_n$
+\begin{definition}
+$A \in M_{n \times n}(\mathbb{R})$ is called \emph{orthogonal} if it is such that $A^{-1} = A^T$.
+\end{definition}
+\textbf{See Kestner's notes at this point for some graphical examples and explanations of matrix transformations... sorry guys, my \LaTeX{} ain't that good...}
+\begin{example}
+Let $R_\theta$ be the rotation of $\mathbb{R}^2$ about the origin through $\theta$ radians anticlockwise. This matrix can be found like so:
+\begin{align*}
+    R_\theta \begin{pmatrix}1\\0 \end{pmatrix} &= \begin{pmatrix} \cos(\theta) \\ \sin(\theta) \end{pmatrix}\\
+    R_\theta \begin{pmatrix}0\\1 \end{pmatrix} &= \begin{pmatrix} -\sin(\theta) \\ \cos(\theta) \end{pmatrix}
+\end{align*}
+so $R_\theta = \begin{pmatrix} \cos(\theta) &-\sin(\theta) \\ \sin(\theta) & \cos(\theta) \end{pmatrix}$
+\end{example}
+\begin{remark}
+So here Kestner kinda rambles and I honestly can't remember what was going on here, so have one last thing to definitely always remember:
+\end{remark}
+If $A \in M_{2 \times 2}(\mathbb{R})$
+\begin{align*}A \begin{pmatrix}1 \\ 0\end{pmatrix} &= \begin{pmatrix} a_{11} \\ a_{21} \end{pmatrix}\\
+A \begin{pmatrix}0 \\ 1\end{pmatrix} &= \begin{pmatrix} a_{12} \\ a_{22} \end{pmatrix}\\
+\end{align*}
+Then $A = \begin{pmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{pmatrix}$
+\subsection{Fields}
+So far we have seen matrices and systems of linear equations in $\mathbb{R}$. We could have used ANY field. \par Every field has distinguished elements 0 (additive identity) and 1 (multiplicative identity). As a result, over any field $F$ we can define
+\begin{enumerate}
+    \item The null matrix (i.e. the additive identity matrix): 
+    \[ \begin{pmatrix} 0 & \cdots & 0 \\
+    \vdots & \ddots & \vdots\\
+    0 & \cdots & 0 \end{pmatrix} \]
+    \item The identity matrix (the matrix multiplicative identity):
+    \[ \begin{pmatrix}
+    1&0&\cdots&\cdots&0\\
+    0&\ddots&&&\vdots\\
+    \vdots &&\ddots&&\vdots\\
+    \vdots&&&\ddots&\vdots\\
+    0 & \cdots & \cdots & \cdots & 1
+    \end{pmatrix} \]
+\end{enumerate}
+\begin{remark}
+It is important to know what field we are working in, especially for scalar multiplication. e.g. if we take $M_{n \times m}(\mathbb{Q})$ this is not closed under scalar multiplication from $\mathbb{R}$ for example, multiplication by $\sqrt{2}$. You have seen $\mathbb{Q}, \mathbb{R}, \mathbb{C}$ and there are also finite fields.
+\end{remark}
+\begin{theorem}
+Let $\mathbb{F}_p = \{0,1,\cdots,p-1\}$ for some prime number $p$. Define addition as $a + p \equiv (a+b) \mod p$. Define multiplication as $ab \equiv (ab) \mod p$. Then $(\mathbb{F}_p, +_{\mod p}, \times_{\mod p}, 0, 1)$ is a field.
+\end{theorem}
+\emph{Proof:} A1-4 are clear from the relevant properties in $\mathbb{Z}$. Similarly, M1-3 are clear from the same properties. But M4 about the multiplicative inverse is less clear. \par For $x \in \mathbb{F}_p  \{0\}$ we have $\gcd(x,p) = 1$. By the intro module there are $s,t \in \mathbb{Z}$ such that
+\[1 = sx + tp \]
+i.e. $sx \equiv 1 \mod p$. Take $s \mod p \in \mathbb{F}_p$. This is then the multiplicative inverse of $x$ in $\mathbb{F}_p$. D1 gets its properties similarly from $\mathbb{Z}$.
+\section{Vector Spaces}
+\subsection{Introduction to vector spaces}
+\begin{definition}
+Let $F$ be a field. A \emph{vector space over $F$} is a non empty set $V$ together with the following maps:
+\begin{enumerate}
+    \item Addition of vectors:
+    \begin{align*}
+        + &: V \times V \rightarrow V\\
+        & \> (v_1, v_2) \rightarrow v_1 + v_2
+    \end{align*}
+    \item Scalar multiplication:
+    \begin{align*}
+        \cdot &:F \times V \rightarrow V\\
+        & \> (f,v) \rightarrow f \cdot v
+    \end{align*}
+\end{enumerate}
+These satisfy the following axioms: \par 
+For vector addition we have:
+\begin{axioms}{A}
+    \item Associativity: 
+    \[ \forall u,v,w \in V: u + (v + w) = (u + v) + w \] \label{ax:A1}
+    \item Commutativity:
+    \[ \forall u,v \in V: u + v = v + u \]\label{ax:A2}
+    \item Additive identity element:
+    \[ \exists 0 \in V, \forall v \in V: 0 + v = v + 0 = v \]
+    0 is called the zero vector.\label{ax:A3}
+    \item \label{ax:A4}Additive inverses:
+    \[\forall v \in V, \exists u \in V: v + u = u + v = 0 \]
+    Then for multiplication by a scalar:
+    \item \label{ax:A5} Distributive law 1:
+    \[ \forall r \in F, \forall u,v \in V: r \cdot(u + v) = r \cdot u + r \cdot v \]
+    \item \label{ax:A6} Distributive law 2:
+    \[ \forall r,s \in F, \forall u \in V: (r+s) \cdot u = r \cdot u + s \cdot u \]
+    \item \label{ax:A7} Associativity:
+    \[ \forall r,s \in F, u \in V: (rs) \cdot u = r \cdot(s \cdot u) \]
+    \item \label{ax:A8} Identity scalar:
+    \[1 \cdot v = v \]
+\end{axioms}
+\end{definition}
+\begin{definition}
+Let $V$ be a vector space over $F$.
+\begin{itemize}
+    \item Elements of $V$ are called \emph{vectors}
+    \item Elements of $F$ are called \emph{scalars}
+    \item We call $V$ an F-Vector space (sometimes, and a lot in this course)
+\end{itemize}
+\end{definition}
+\begin{example}
+The following are real vector spaces:
+\begin{enumerate}
+    \item The canonical example is $\mathbb{R}^n$ where $+$ is normal matrix addition and $\cdot$ is scalar multiplication.
+    \item $M_{m \times n}(\mathbb{R})$ with + matrix addition and $\cdot$ normal scalar multiplication and
+    \[0 = \begin{pmatrix}
+    0&\cdots&0\\
+    \vdots&\ddots&\vdots\\
+    0&\cdots&0
+    \end{pmatrix} \]
+    \item Define $V=\mathbb{R}^X$ to be the set of \emph{real-valued functions on X}. 
+    \[\mathbb{R}^X = \left\{ \begin{array}{cc}
+    f :& f \> \text{is a function}\\
+    f :& X \rightarrow \mathbb{R} \end{array}
+    \right\} \]
+    Then for $f,g \in \mathbb{R}^X, \alpha \in \mathbb{R}$, define
+    \[ f + g: X \rightarrow \mathbb{R} \]
+    \[ \forall x \in X, (f + g)(x) = f(x) + g(x) \]
+    and define:
+    \[ \alpha \cdot f: X \rightarrow \mathbb{R} \]
+    \[\forall x \in X: (\alpha \cdot f)(x) = \alpha(f(x)) \]
+\end{enumerate}
+\end{example}
+We'll now present some non-examples of vector spaces and examine why they aren't vector spaces in $\mathbb{R}$.
+\begin{example}
+\begin{enumerate}
+    \item The set of vectors $V = \left\{ \begin{pmatrix} a\\b \end{pmatrix}: a,b \in \mathbb{Z} \right\}$ is NOT an $\mathbb{R}$-vector space. This is because we can't define scalar multiplication. Take the following counterexample:
+    \[ \sqrt{2} \begin{pmatrix} 1\\1\end{pmatrix} \notin V\]
+    \item $V = \left\{ \begin{pmatrix} a+1\\2 \end{pmatrix}: a \in \mathbb{R} \right\}$ with standard multiplication and addition. This isn't a vector space because it doesn't contain the identity element, $\begin{pmatrix}0\\0\end{pmatrix}$
+    \item Consider the following addition and scalar multiplication operations.
+    \begin{align}
+        \begin{pmatrix}x\\y\end{pmatrix} + \begin{pmatrix} a\\b \end{pmatrix} &= \begin{pmatrix}x+a \\ y+b \end{pmatrix}\\
+        r \cdot \begin{pmatrix}x\\y \end{pmatrix} &= \begin{pmatrix}0\\ry\end{pmatrix}\\
+        r \in \mathbb{R} \notag
+    \end{align}
+    this isn't an $\mathbb{R}$-vector space because it doesn't satisfy axiom 8.
+    \[1 \cdot \begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix} 0\\1 \end{pmatrix} \]
+\end{enumerate}
+\end{example}
+\subsection{Subspaces}
+\begin{definition}
+A subset $W$ of a vector space $V$ (over $F$) is a \emph{subspace} if:
+\begin{axioms}{S}
+    \item $W$ is not empty. \label{ax:S1}
+    \item Let $v,w \in W,$ then $ v + w \in W$ i.e., the set is \emph{closed under vector addition.} \label{ax:S2}
+    \item Let $v \in W, \alpha \in F,$ then $\alpha \cdot v \in W$ i.e. the set is \emph{closed under scalar multiplication}. \label{ax:S3}
+\end{axioms}
+\end{definition}
+\emph{Note:} Sometimes we use the notation $W \leq V$ to mean $W$ is a subspace of $V$.
+\begin{remark}
+Note that $V$ and the \emph{zero subspace} $\{0_v\}$ are always subspaces of $V$. Any other subspace is called a \emph{proper subspace}.
+\end{remark}
+\begin{proposition}
+Every subspace must contain the zero vector.
+\end{proposition}
+\emph{Proof}: First a claim: for an F-vector space $V$ with $0 \in F$ [the field additive identity] we have 
+\[0 \cdot v = 0_v, \forall v \in V \]
+We must simply show that $0 \cdot v$ works as an additive identity since the additive identity is always unique. Let $v$ be any vector $\begin{pmatrix} a\\b \end{pmatrix}$ so:
+\[ 0 \cdot v + v = (0+1) \cdot v = 1 \cdot v \]
+and we're done with this claim. Now onto the proof proper. \par
+Let $ W \leq V, v \in W \eqref{ax:S1}$ then $-1 \cdot v \in W \eqref{ax:S3}$
+\begin{align*}
+    0_v&= 0 \cdot v & \text{By our claim}\\
+    &= (1-1) \cdot v & \text{field axioms}\\
+    &= 1 \cdot v + -1 \cdot v & \eqref{ax:A6}\\
+    &= v + -1 \cdot v \in W & \eqref{ax:S2}
+\end{align*}
+This can also be proved kinda easier: Once we know that $ 0 \cdot v = 0_v$ then we have $ v \in W$ and $0 \in F$ so
+\[ 0 \cdot v = 0_v \in W \> \text{by} \eqref{ax:S3}\]
+\begin{example}
+Show that the set $X = \left\{ \begin{pmatrix} x\\0\end{pmatrix}: x \in \mathbb{R} \right\}$ is a subspace of $\mathbb{R}^2$
+\emph{Proof:}\\\ref{ax:S1}: $ \begin{pmatrix} 1\\0\end{pmatrix} \in X$ so $X \neq \emptyset$ \\
+\ref{ax:S2}: Let $v,w \in X$ then 
+\begin{align*}v = \begin{pmatrix}a \\0\end{pmatrix}, \>w &= \begin{pmatrix}b\\0\end{pmatrix}, a,b \in \mathbb{R}\\
+v + w &= \begin{pmatrix}a\\0\end{pmatrix} + \begin{pmatrix}b\\0\end{pmatrix}\\
+&= \begin{pmatrix} a + b\\0 \end{pmatrix}\\
+\end{align*}
+and since $a + b \in \mathbb{R}, v + w \in X$\\
+\ref{ax:S3}: let $v \in X$ and $r \in \mathbb{R}$. Then $v = \begin{pmatrix}a\\0\end{pmatrix}$ for some $a \in \mathbb{R}$.
+\[ r \cdot v = r\begin{pmatrix}a\\0\end{pmatrix} = \begin{pmatrix}ra\\0\end{pmatrix} \]
+and as $ra \in \mathbb{R}, r \cdot v \in X$
+\end{example}
+\begin{theorem}
+let $U \leq V, W \leq V, V$ an F-vector space. Then $U \cap W \leq V$. In general, the intersection of any set of subspaces is a subspace.
+\end{theorem}
+\emph{Proof:} again, we'll go through the subspace axioms and check!\\ \\
+\ref{ax:S1}: $0_v \in U, 0_v \in W$ by 3.2.3. So $0_v \in U \cap W$ i.e. $U \cap W \neq \emptyset$\\ \\
+\ref{ax:S2}: Suppose $v_1, v_2 \in U \cap W$. Then $v_1,v_2 \in U$ and by $U \leq V \eqref{ax:S2}$ we have $v_1 + v_2 \in U$. The same holds with $W$ in place of U.\\ \\
+\ref{ax:S3}: Suppose $v \in U \cap W, \alpha \in F$. Then $v \in U \implies \alpha v \in U$ (since $U \leq V$ by \ref{ax:S3}) Similarly, $v \in W \implies \alpha v \in W$ (since $W \leq V$ by \ref{ax:S3}). So then $\alpha v \in U \cap W$. \\ \\
+As $U \cap W \subset V$ we get $U \cap W \leq V$.
+\begin{proposition}
+Let $V$ be an F-Vector space $W \leq V$. Then $W$ is an F-vector space too.
+\end{proposition}
+\emph{Proof:} All we need to do is show that every vector in the subspace $W$ is also in $V$. In more mathematical terms, $W \cup V$ is just $V$. We already have that in order for $W$ to be a subspace, it must also be a subset of $V$. By the definition of subsets then, every member of $W$ is a member of $V$, proving the proposition.
+\begin{example}
+In general if $U \leq V$ and $W \leq V$ for V an F-vector space, we don't get $U \cup W$ being a subspace. For example, let
+\begin{align*}
+    U &= \left\{ \begin{pmatrix}x\\0\end{pmatrix} \in \mathbb{R}^2 : x \in \mathbb{R} \right\} & \text{x-axis}\\
+    W &= \left\{ \begin{pmatrix}0\\y\end{pmatrix} \in \mathbb{R}^2 : y \in \mathbb{R} \right\} & \text{y-axis}\\
+    V &= \mathbb{R}^2&\\
+    \intertext{Then}
+    U &\leq V, \> W \leq V&\\
+    \intertext{Then}
+    \begin{pmatrix}1\\0\end{pmatrix}, \begin{pmatrix}0\\1\end{pmatrix} & \in U \cup W&\\
+    \intertext{But}
+    \begin{pmatrix}1\\0\end{pmatrix}+\begin{pmatrix}0\\1\end{pmatrix}&=\begin{pmatrix}1\\1\end{pmatrix} \notin U \cup W&\\
+\end{align*}
+so $U \cup W$ is not generally closed under vector addition.
+\end{example}
+\subsection{Spanning sets}
+\begin{definition}
+Let $V$ be an F-vector space, and let $u_1,\cdots, u_m \in V$.
+\begin{itemize}
+    \item A \emph{linear combination} of $u_1 \cdots , u_m$ is a vector of the form $\alpha_1 u_1+ \cdots+ \alpha_m u_m = \sum^m_{i=1} \alpha_iu_i$ for scalars $\alpha_1 , \cdots, \alpha_m \in F$.
+    \item The \emph{span} of $u_1, \cdots, u_m$ is the set of linear combinations of $u_1, \cdots, u_m$. i.e. $\text{span}(u_1, \cdots, u_m) = \{ \alpha_1u_1+ \cdots + \alpha_1u_1 \in V: \alpha_1, \cdots, \alpha_m \in F$ \}
+\end{itemize}
+\end{definition}
+\begin{lemma}
+Let $V$ be an F-vector space and $u_1 \cdots u_m \in V$. Then $\text{span}(u_1, \cdots, u_m)$ is a subspace of $V$.
+\end{lemma}
+\emph{Proof}: It's quite clear that it's a subspace, but we do the "test" (i.e. check the axioms again) to make sure. \\ \\
+\ref{ax:S1}: $u_1 \in \text{span}(u_1, \cdots, u_m)$ so span$(u_1, \cdots, u_m) \neq \emptyset$ \\\\
+\ref{ax:S2}: Suppose $v, w \in \text{span}(u_1, \cdots, u_m)$, so
+\begin{align*}
+    v &= \sum^m_{i=1} \alpha_iu_i & \alpha_i \in F\\
+    \intertext{and}
+    w &= \sum^m_{i=1} \beta_iu_i & \beta_i \in F\\
+    v + w &= \sum^m_{i=1} \alpha_iu_i + \sum^m_{i=1} \beta_iu_i &\\
+    &= \sum^m_{i=1} (\alpha_i + \beta_i)u_i & \eqref{ax:A6}\\
+    \text{As} \> &\alpha_i + \beta_i \in F &\\
+    v+w &\in \text{span}(u_1, \cdots, u_m) &
+\end{align*}\\ \\
+\ref{ax:S3}: Suppose $v \in \text{span}(u_1, \cdots, u_m)$ and $\lambda \in F$, then
+\begin{align*}
+    v &= \sum^m_{i=1}\alpha_iu_i & \alpha_i \in F\\
+    \intertext{so}
+    \lambda v &= \lambda\left( \sum^m_{i=1}\alpha_iu_i \right)
+    = \sum^m_{i=1}(\lambda \alpha_i)u_i & \eqref{ax:A5}
+\end{align*}
+And as $\lambda \alpha_i \in F$ we can have $\lambda v \in \text{span}(u_1 \cdots, u_m)$.
+\begin{remark}
+By convention we take the empty sum to be $0_v$. So span$(\emptyset) = \{0_v\}$. For an infinite set $S$ we still take finite sums for Span$(S)$. I.e.
+\[ \text{span}(S) = \left\{ \sum_{s_i \in S'} \alpha_is_i: S' \> \text{a finite subset of} \> S, \alpha_i \in F \right\} \]
+\end{remark}
+\begin{proposition}
+For an infinite subset $S$ of an F-vector space $V$, span$(S)$ is a subspace.
+\end{proposition}
+\emph{Proof}: Dear GOD somebody please let me know what the \textbf{fuck} was even happening at this point because Kestner was equally muddled and confused by her proof here I distinctly remember.
+\begin{definition}
+Let $V$ be an F-vector space, suppose $s \leq V$ such that span$(s) = V$. Then we say $S$ is a \emph{spanning set} for V, or equivalently $S$ \emph{spans} V.
+\end{definition}
+\begin{example}
+Which of the following sets spans $\mathbb{R}^3$?
+\begin{enumerate}
+    \item  $\left\{\begin{pmatrix}1\\0\\0\end{pmatrix},\begin{pmatrix}0\\1\\0\end{pmatrix},\begin{pmatrix}1\\1\\0\end{pmatrix},\begin{pmatrix}0\\1\\1\end{pmatrix}\right\}$: yes this is a spanning set! You can make $\begin{pmatrix}0\\0\\1\end{pmatrix}$ by taking he second vector away from the fourth.
+    \item $\left\{\begin{pmatrix}1\\0\\1\end{pmatrix}\begin{pmatrix}0\\1\\0\end{pmatrix}\begin{pmatrix}1\\1\\1\end{pmatrix} \right\}$: Nope, this guy is not :(
+    \item $\left\{\begin{pmatrix}3\\0\\2\end{pmatrix}\begin{pmatrix}0\\1\\1\end{pmatrix}\begin{pmatrix}-1\\-1\\-1\end{pmatrix}\right\}$ yeppers, this dude spans $\mathbb{R}^3$ in a major wayyyyy
+    \item $\left\{\begin{pmatrix}1\\0\\1\end{pmatrix}\begin{pmatrix}0\\1\\0\end{pmatrix}\right\}$: Oh my goodness look at this d00d, he doesn't span at all omg
+\end{enumerate}
+\end{example}
+The basic takeaway from this is the fact to get a spanning set over $\mathbb{R}^n$ you have to be able to make all the $e_i$ unit vectors using addition and scalar multiplication, like what Mister (\textit{The Prof}) T taught us in the intro course. Ok silliness over sorry about that.\\
+\begin{center}
+    ********
+\end{center}
+In part 1 of that previous exercise, we get a 'redundant' vector. If as well as being a spanning set, it's also \emph{linearly independent}, then this won't happen.
+\subsection{Linear Independence}
+\begin{definition}
+Let $V$ be an F-vector space. We say $u_1, \cdots, u_m \in V$ are \emph{linearly independent} if whenever
+\begin{align*}
+    \alpha_1u_1 + \cdots + \alpha_mu_m &= 0_v & \alpha_i \in F\\
+    \intertext{then}
+    \alpha_1 = \alpha_2 = \cdots = \alpha_m &= 0 \in F
+\end{align*}
+we say $\{u_1, \cdots, u_m \}$ is a \emph{linearly independent set}.\\\\
+Alternatively, a set $\{u_1, \cdots, u_m\}$ is \emph{linearly dependent} if $\alpha_1u_1 + \cdots + \alpha_mu_m = 0_v$ where at least one of the $\alpha_i \neq 0 \in F$. A set is linearly independent if it is NOT linearly dependent (duh).
+\end{definition}
+\begin{example}
+The set $S = \left\{ \begin{pmatrix}1\\0\\0\end{pmatrix}, \begin{pmatrix}0\\1\\1\end{pmatrix} \right\}$ is a linearly independent subset of $\mathbb{R}^3$.\par
+\emph{Proof:} Suppose
+\begin{align*}
+    \alpha_1\begin{pmatrix}1\\0\\0\end{pmatrix} + \alpha_2\begin{pmatrix}0\\1\\1\end{pmatrix} &= \begin{pmatrix}0\\0\\0\end{pmatrix}\\
+    \intertext{Then}
+    \begin{pmatrix}\alpha_1\\\alpha_2\\\alpha_2\end{pmatrix} &= \begin{pmatrix}0\\0\\0\end{pmatrix}\\
+    \intertext{so}
+    \alpha_1=\alpha_2&=0 \in F
+\end{align*}
+\end{example}
+\begin{example}
+\begin{itemize}
+\item Let $f, g: \mathbb{R} \rightarrow \mathbb{R}$ be functions and suppose $f(x) = x, g(x) = x^2$. The set $\{f, g\}$ is a linearly independent subset of $\mathbb{R}^{\mathbb{R}}$, i.e. the set of functions from $\mathbb{R} \rightarrow \mathbb{R}$\par
+\emph{Proof:} Assume $\alpha, \beta \in \mathbb{R}$ such that $(\alpha f + \beta g) = 0_v$. Our aim is to prove $\alpha = \beta = 0$. Two functions are equal iff they are equal on all elements of the domain. Now $1, 2 \in \mathbb{R}$:
+\begin{align*}
+    0_v(1) &= (\alpha f + \beta g)(1)\\
+    0 &= \alpha f(1) + \beta g(1)\\
+    &= \alpha(1) + \beta(1)\\
+    &= \alpha + \beta\\
+    \alpha &= -\beta\\
+    \intertext{also,}
+    0_v(2) &= (\alpha f + \beta g)(2)\\
+    0&= \alpha f(2) + \beta g(2)\\
+    &= \alpha 2 + \beta 4\\
+    \alpha &= -2 \beta
+\end{align*}
+Therefore $\alpha = \beta = 0$
+\item The set $\left\{ \begin{pmatrix}1\\0\\0\end{pmatrix}, \begin{pmatrix}2\\1\\1\end{pmatrix}, \begin{pmatrix}1\\1\\1\end{pmatrix} \right\}$ is a linearly dependent subset of $\mathbb{R}^3$. \par
+\emph{Proof:} Note
+\[ 1 \begin{pmatrix}1\\1\\1\end{pmatrix} + 1 \begin{pmatrix}1\\0\\0\end{pmatrix} + (-1)\begin{pmatrix}2\\1\\1\end{pmatrix} = \begin{pmatrix}0\\0\\0\end{pmatrix}\]
+So there is a combination of these vectors where the $\alpha_i$ don't need to all be zero to obtain the zero vector. This can also be shown another way:
+\[\begin{pmatrix}2\\1\\1\end{pmatrix} = \begin{pmatrix}1\\0\\0\end{pmatrix} + \begin{pmatrix}1\\1\\1\end{pmatrix} \]
+Thereby showing that one member of the set can be made using the two others, which is sufficient for our definition of linear dependence.
+\item V an F-vector space then $\{0_v\}$ is linearly dependent, by the definition (since the $\alpha_i$ can be anything and we get $0_v$ anyway)
+\item V an F-vector space, and for $v \in V, \{v\}$ is linearly independent iff $v \neq 0_v$.
+\end{itemize}
+\end{example}
+\begin{lemma}
+Let $v_1,..., v_m$ be linearly independent in an F-Vector space $V$. Let $v_{m+1}$ be such that $v_{m+1} \notin \text{span}(v_1, ..., v_m)$. Then $ \{v_1, ... ,v_m, v_{m+1}$ is linearly independent.
+\end{lemma}
+\emph{Proof:} suppose $\alpha_1,..., \alpha_m, \alpha_{m+1} \in F$ such that
+\[ \alpha_1v_1 + \cdots + \alpha_mv_m + \alpha_{m+1}v_{m+1} = 0_v\]
+Our aim is to show that $\alpha_1 = \cdots = \alpha_m = \alpha_{m+1} = 0$. Suppose $\alpha_{m+1} \neq 0$, then 
+\begin{align*}
+    v_{m+1} &= \frac{-1}{\alpha_{m+1}}(\alpha_1v_1+ \cdots + \alpha_mv_m)\\
+    &\in \text{span}(v_1, ... v_m) 
+\end{align*}
+so $\alpha_{m+1} = 0$. So:
+\begin{align*}
+    \alpha_1v_1 + \cdots + \alpha_mv_m + 0_v &= 0_v\\
+    \intertext{ie}
+    \alpha_1v_1 + \cdots + \alpha_mv_m &= 0_v\\
+    \intertext{but}
+    \{v_1, ..., v_m \} &\> \text{is linearly independent}\\
+    \intertext{so}
+    \alpha_1 = \alpha_2 = \cdots = \alpha_m &= 0
+\end{align*}
+\subsection{Bases}
+\begin{definition}
+\begin{itemize}
+    \item Let V be an F-vector space. A \emph{basis} of V is a linearly independent spanning set.
+    \item If V has a finite basis, then we say V is \emph{finite dimensional}.
+\end{itemize}
+\end{definition}
+\begin{example}
+\begin{enumerate}
+    \item The set $B = \left\{ \begin{pmatrix}1\\0\\0\end{pmatrix}, \begin{pmatrix}0\\1\\0\end{pmatrix}, \begin{pmatrix}0\\0\\1\end{pmatrix} \right\}$ is a basis for $\mathbb{R}^3$. \\
+    Proof: \begin{itemize}
+        \item Show $B$ is Linearly independent. Suppose $\alpha_1, \alpha_2, \alpha_3 \in \mathbb{R}$ such that 
+        \[\alpha_1\begin{pmatrix}1\\0\\0\end{pmatrix} + \alpha_2\begin{pmatrix}0\\1\\0\end{pmatrix} + \alpha_3\begin{pmatrix}0\\0\\1\end{pmatrix} = \begin{pmatrix}0\\0\\0\end{pmatrix} \]
+        Then $\alpha_1 = \alpha_2 = \alpha_3 = 0$.
+        \item Show $B$ spans $\mathbb{R}^3$. Let $v \in \mathbb{R}^3$, then $v = \begin{pmatrix}v_1\\v_2\\v_3\end{pmatrix}$ for $v_1, v_2, v_3 \in \mathbb{R}$. Then
+        \[v= \begin{pmatrix}v_1\\v_2\\v_3\end{pmatrix} = v_1\begin{pmatrix}1\\0\\0\end{pmatrix} + v_2 \begin{pmatrix}0\\1\\0\end{pmatrix} + v_3 \begin{pmatrix}0\\0\\1\end{pmatrix} \in \text{span}(B)\]
+    \end{itemize}
+    \item Let F be a field, then in $F^n$, let $e_i$ be the column vectors with zeroes everywhere except the row $i$, where the entry is 1. Then $\{e_i,..., e_n\}$ forms a basis for $F^n$. The proof is very similar to the last one, just check that it's linearly dependent and that it spans F!
+\end{enumerate}
+\end{example}
+\begin{remark}
+We can see from the following example that not all vector spaces are finite dimensional. Take the vector space $\mathbb{R}[x] := \>$ polynomials with variable $x$, which is a problem in problem sheet 3 to prove that it's a vector space. This vector space has basis $\{ 1, x, x^2, x^3... \}$ which is evidently not finite dimensional.
+\end{remark}
+\begin{proposition}
+Let $V$ be an F-vector space, $S = \{u_1 ... u_m\} \subset V$. Then $S$ is a basis if and only if every vector in V has a \emph{unique} expression as a linear combination of elements of S.
+\end{proposition}
+\emph{Proof}: "$\implies$" Suppose $S$ is a basis, and take $V \in V$. [We want there to be unique $\alpha_1... \alpha_m \in F$ such that $v = \sum^m_{i=1}\alpha_iu_i$]\\
+EXISTENCE: Since $V$ is spanned by $S$, we have $\alpha_1, ..., \alpha_m \in F$ such that
+\[v = \alpha_1u_1 + \cdots + \alpha_mu_m \]
+UNIQUENESS: Suppose for contradiction that we also have $\beta_1, ..., \beta_m \in F$ such that $v = \beta_1u_1 + \cdots + \beta_mu_m = \sum^m_{i+1}\beta_iu_i$. Then
+\begin{align*}
+    \sum^m_{i=1}\alpha_iu_i &= \sum^m_{i=1}\beta_iu_i\\
+    \intertext{i.e.}
+    \left( \sum^m_{i=1}\alpha_iu_i \right) - \left( \sum^m_{i=1}\beta_iu_i \right) &= 0_v\\
+    \sum^m_{i=1}(\alpha_i - \beta_i)u_i &= 0_v
+\end{align*}
+but $\{ u_1, ..., u_m \}$ is linearly independent. So $\alpha_i - \beta_i = 0, \forall i \in \{1, 2, ..., m\}$ i.e. $\alpha_i = \beta_i$ which is our contradiction. So the $\alpha_i$ are unique. \\
+"$\impliedby$": Suppose conversely for every $v \in V$ there are unique $\alpha_1, ..., \alpha_m \in F$ such that $v = \sum^m_{i=1}\alpha_iu_i$. [Our aim is to show that the set $\{u_1, ..., u_m\}$ must be spanning, and linearly independent.] Suppose for every $v \in V$ there are unique $\alpha_1, ..., \alpha_n \in F$ such that $\alpha_1u_1 + \cdots + \alpha_mu_m = v$
+\begin{enumerate}
+    \item Spanning: Let $v \in V$ then there exist $\alpha_1, ..., \alpha_m \in F$ such that $v = \alpha_1u_1 + \cdots + \alpha_mu_m \in \text{span}(u_1, ..., u_m)$
+    \item Linear Independence: suppose $\alpha_1, ..., \alpha_m \in F$ with $\alpha_1u_1 + \cdots + \alpha_mu_m = 0_v$. Note that $0u_1 + \cdots + 0u_m = 0_v$ so by uniqueness, 
+    \[\alpha_1 = \cdots = \alpha_m = 0\]
+\end{enumerate}
+\begin{remark}
+Let $B = \{ u_1, ..., u_m\}$ be a basis for an F-vector space. By proposition 3.5.4 we have a bijective map
+\begin{gather*}
+    V \longrightarrow F^m\\
+    v = \alpha_1u_1 + \cdots + \alpha_mu_m \rightarrow (\alpha_1, \alpha_2, ..., \alpha_m)
+\end{gather*}
+we call $(\alpha_1, ..., \alpha_m)$ the \emph{coordinates of V} (with respect to B)
+\end{remark}
+\begin{proposition}
+Let $V$ be a non-trivial (i.e. not $\{0_v\}$ F-vector space, and suppose $V$ has a finite spanning set S. Then $S$ contains an LI spanning set (i.e. a basis).
+\end{proposition}
+\emph{Proof:} Consider T, such that
+\begin{itemize}
+    \item T is LI
+    \item $T \subset S$
+    \item T is the largest such subset (maximal)
+\end{itemize}
+We have such a T because $V \neq \{0_v\}$, so there is $v \in V$, thus for S to be a spanning set, $S \neq \{0_v\}$. Take $v' \in V, \{v'\}$ is LI. \\
+\emph{Claim:} T is spanning. The proof of this is as follows: assume on the contrary that $v \in V (= \text{span}(S))$ such that $v \notin \text{span}(T)$. So $v \in \text{span}(s) \backslash \text{span}(T)$. By Lemma 3.4.4, $\{v\} \cup T$ is LI. We may assume that $v \in S$ because (assuming T is maximal but not spanning), $v$ must be in $S$ to give us $\mathrm{Span}(T)\neq \mathrm{Span}(S)$, since if $v \notin S$, we get $\mathrm{Span}(T)=\mathrm{Span}(S)$, which contradicts $T$ not spanning. Therefore $|\{v\} \cup T| > |T|$, which is a contradiction.
+\subsection{Dimension}
+\begin{lemma}
+(\emph{Steinitz Exchange Lemma})
+Let $V$ be a vector space over F. Take $X \leq V$ and suppose $u \in \text{span}(X)$. But $u \notin \text{span}(X \backslash \{v\})$ for some $v \in X$. Now let $Y = (X \backslash \{v\}) \cup u$, "exchange v for u". Then $\text{span}(X) = \text{span}(Y)$.
+\end{lemma} 
+\emph{Proof:} Since $u \in \text{span}(X)$ we have $\alpha_1, ..., \alpha_n \in F$ and $v_1, ..., v_n \in X$ such that
+\[u = \alpha_1v_1 + \cdots + \alpha_nv_n\]
+As $u \notin \text{span}(X \backslash \{v\}$ we may assume $v = v_n$ and $\alpha_n \neq 0$. So $v = v_n = (\alpha_n)^{-1}(u - (\alpha_1v_1 + \cdots + \alpha_{n-1}u_{n-1})$.\\
+Then span$(Y) \leq \text{span}(X)$. Take $w \in \text{span}(Y)$. There are $\beta_1, ..., \beta_m \in F$ and $v_1, ..., v_m \in Y = (X \backslash \{v\}) \cup \{u\}$ such that
+\[\beta_1v_1 + \cdots + \beta_m v_m\]
+We may assume that $v_1 = u$ (and if it doesn't appear, then set $\beta_1 =0$. Then 
+\begin{align*}
+    w &= \beta_1u + \sum^m_{i=2}b_iv_i\\
+    w &= \beta_1(\alpha_1v_1 + \cdots + \alpha_nv_n) + \sum^m_{i=2} \beta_iv_i
+\end{align*}
+so $w \in \text{span}(X)$ Similarly, using the case if $w \in \text{span}(X)$ then $w \in \text{span}(Y)$ i.e. 
+\begin{align*}
+    \text{span}(X) &\subset \text{span}(Y)\\
+    \intertext{Thus}
+    \text{span}(X) &= \text{span}(Y) 
+\end{align*}
+\begin{remark}
+We need this lemma to be able to define dimensions... it relied on taking inverses in F.
+\end{remark}
+\begin{theorem}
+Let $V$ be a vector space. Then let $S, T$ be finite subsets of $V$. Suppose that
+\begin{itemize}
+    \item $S$ is an LI set.
+    \item $T$ spans $V$
+\end{itemize}
+Then $|S| \leq |T|$
+\end{theorem}
+\textbf{Aside:} Read this as "LI sets are smaller than or equal to spanning sets" \par
+\emph{Proof:} 
+\begin{align*}
+    S &= \{s_1, ..., s_m\} & \text{LI}\\
+    T &= \{t_1, ..., t_n \} & \text{spans}
+\end{align*}
+IDEA: let's use S.E.L. and swap elements of $T$ for elements of $S$, retaining that the set spans $V$. We cannot run out of space in T, as this would mean the remaining elements of $S$ were in the span of the ones already placed in $T$. \par Assume $S$ is LI, $T$ spans $V$.
+\begin{align*}
+    S &= \{s_1, ..., s_m\}\\
+    T &= \{t_1, ..., t_n \}
+\end{align*}
+Let $T=T_0$, since span$(T_0) = V$, there is some $i$ such that
+\begin{align*}
+    s_1 &\in \text{span}(t_1, ..., t_i)\\
+    s_1 & \notin \text{span}(s_1, t_1, ..., t_{i-1}, t_{i+1}, ..., t_n)
+\end{align*}
+Let $T_1 = \{s_1, t_1, ..., t_{i-1}, t_{i+1}, ..., t_n\}$, which is everything in $T$ except for $t_i$. By the S.E.L we get $V = \text{span}(T_0) = \text{span}(T_1)$. We continue inductively. \par
+Suppose for some $j$ with $1 \leq j \leq m$ we have 
+\[T_j = \{s_1, ..., s_j, t_{i1}, ..., t_{i(n-j)}\} \]
+with span$(T_j) = \text{span}(T)=V, t_{ij} \in T$ Now 
+\begin{align*}
+    s_{j+1} &\in \text{Span}(t_j)\\
+    s_{j+1} & \notin \text{Span}(s_1, ..., s_j)
+\end{align*}
+$S$ is LI. So there is a $k$ such that
+\begin{align*}
+    s_{j+1} &\in \text{Span}\{s_1, ..., s_j, t_{i_1}, ..., t_{i_k}\}\\
+    s_{j+1} &\notin \{s_1, ..., s_{j+1}, t_{i_1}, ...,  t_{i_{k+1}}\}
+\end{align*}
+Then let $T_{j+1} = \{s_1, ..., s_{j+1}, t_{i_1}, ..., t_{i_{k-1}}, t_{i_{k+1}}, ..., t_{i_{n-j}}$ which is $T_j$ with $t_{i_k}$ removed. Then Span$(T_{j+1}) = \text{Span}(T_j) = V$ by relabelling we have a set of the form
+\[T_{j+1} = \{s_1, ..., s_{j+1}, t_{i_1}, ..., t_{i_{n-(j+1)}}\} \]
+After $j$ steps, we have replaced $j$ elements of $T$ with $j$ elements of $S$. We cannot run out of elements of $T$ before we run out of elements of $S$, as otherwise the remaining elements of $S$ would be in the span of the elements of $S$ that have already been swapped, which contradicts that $S$ is linearly independent.\par\par
+\emph{Ben's remark:} Wow this proof is hard to follow. It's basically a how-to of the SEL, I guess. Hopefully the \LaTeX{} formatting will make it easier for you guys. See Kestner's notes here for some examples with diagrams.
+\begin{corollary}
+Let $V$ be a finite dimensional vector space. Let $T,S$ be bases of $V$. Then $T$ and $S$ are both finite and $|S| = |T|$.
+\end{corollary}
+\emph{Proof:} Since $V$ is finite dimensional, it has a finite basis $B$. Suppose $|B|=n$. By 3.6.3, any linearly independent set has size $\leq n$. i.e. $|S| \leq n, |T| \leq n$. But $S$ is spanning, and $T$ is LI. So by 3.6.5 $|T| \leq |S|$. And $T$ is spanning, and $S$ is LI. So $|S| \leq |T|$. Therefore $|S|=|T|$.
+\begin{definition}
+Let $V$ be a finite dimensional vector space. The \emph{dimension of V}, written dim$V$, is the size of any basis of $V$.
+\end{definition}
+We \textbf{need} the previous corollary and the SEL to know that the dimension of $V$ is unique.
+\begin{example}
+Describe the subspaces of $\mathbb{R}$. Problem sheet 3, Q4.
+\end{example}
+By 3.6.3 these have dim $\leq 3$.
+\begin{align*}
+    \text{dim}3 &: \mathbb{R}^3\\
+    \text{dim}2&: \text{Planes through the origin.} \cong \mathbb{R}^2\\
+    \text{dim}1&:\text{lines through the origin.}\\
+    \text{dim}0&: \left\{\begin{pmatrix}0\\0\\0\end{pmatrix}\right\}
+\end{align*}
+
+\subsection{More subspaces}
+\begin{definition}
+Let $V$ be a vector space, $U, W$ subspaces.
+\begin{itemize}
+    \item The \emph{intersection of U and W} is $U \cap W = \{ v \in V: v \in U, v \in W\}$
+    \item The \emph{sum of U and W} is $U+W := \{u+w: u \in U, w \in W\}$
+\end{itemize}
+\end{definition}
+\begin{remark}
+$U \leq U+w, W \leq U+W$ as $0 \in U,$ and $ \forall w \in W, w = 0+w \in U+W$
+\end{remark}
+\begin{example}
+Let $V=\mathbb{R}^2, U = \text{Span}\{(1,0)\}, W = \text{Span}\{(0,1)\}$. Then $U+W = V$
+\emph{Proof:} $U+W \leq V$. Now let $v \in V$ then $v = (\alpha, \beta), \alpha, \beta \in \mathbb{R}$. Also:
+\[V = \alpha(1,0) + \beta(0,1) \in U+W\]
+so $U+W \geq V \therefore U+W = V$.
+\end{example}
+\begin{example}
+Let $U$ and $W$ be subspaces of an F-vector space $V$. Then $U+W$ and $U \cap W$ are subspaces of $V$.
+\end{example}
+\emph{Proof:}
+\begin{itemize}
+    \item $U \cap W$ is 3.2.6
+    \item $U + W$ we check with the subspace test.
+\end{itemize}
+\begin{axioms}{S}
+    \item $0 \in U, 0 \in W,$ so $0+0 \in U+W$
+    \item Suppose $v_1, v_2 \in U+W.$ Then
+    \begin{align*}
+        v_1 &= u_1 + w_1 & \text{for some} u_1 \in U, w_1 \in W\\
+        v_2 &= u_2 + w_2 & \text{for some} u_2 \in U, w_2 \in W\\
+        \intertext{So}
+        v_1 + v_2 &= (u+1 + w_1) + (u_2 + w_2)\\
+        &= (u_1 + u_2) + (w_1 + w_2)
+    \end{align*}
+    so $v_1 + v_2 \in U+W$
+    \item Suppose $\lambda \in F, v \in U+W$. Then
+    \begin{align*}
+        v &= u + w & \text{for some} u \in U, w \in W\\
+        \lambda v &= \lambda(u+w)\\
+        &= \lambda u + \lambda w\\
+    \end{align*}
+    so $\lambda \in U + W$.
+\end{axioms}
+\begin{proposition}
+Let $V$ be a vector space over $F$. $U, W \leq V$. Suppose
+\begin{itemize}
+    \item $U = \text{Span} \{u_1, ..., u_s\}$
+    \item $W = \text{Span}\{w_1,...,w_r\}$
+\end{itemize}
+Then $U+W = \text{Span}\{u_1,...,u_2,w_1,...,w_r\} = S$
+\end{proposition}
+\emph{Proof:} We want $U+W \subset S$. Let $v \in U+W, v=u+w, u \in U, w \in W$ So
+\begin{align*}
+    u&= \alpha-1u_1+\cdots +\alpha_su_s\\
+    w&=\beta_1w_1 + \cdots + \beta_rw_r\\
+    \intertext{Thus}
+    u+w&= \alpha_1u_1 + \cdots + \alpha_su_s + \beta_1w_1 + \cdots + \beta_rw_r \in S
+\end{align*}
+Now we want $S \subset U+W$. Suppose $v \in S,$ then 
+\begin{align*}
+    v = \lambda_1u_1 + \cdots + \lambda_su_s + \mu_1w_1 + \cdots + \mu_rw_r
+    & \text{Span}\{u_1,...,u_s\} + \text{Span}\{w_1,...,w_r\}
+\end{align*}
+So $v \in U+W$
+\begin{example}
+Let \begin{align*}
+    v&=\mathbb{R}^2\\
+    U&=\text{Span}\{(1,0)\}\\
+    W&=\text{Span}\{(0,1)\}\\
+    U+W&=\text{Span}\{(0,1),(,1,0)\}\\
+    &= \mathbb{R}^2
+\end{align*}
+\end{example}
+\begin{example}
+Let $V = \mathbb{R}^3$.
+\begin{align*}
+    U &= \{(x_1,x_2,x_3) \in \mathbb{R}^3: x_1 + x_2 + x_3 =0\}\\
+    W &= \{(x_1, x_2, x_3 \in \mathbb{R}^3: -x_1 +2x_2 + x_3 =0\}
+\end{align*}
+Find bases for $U, W, U\cap W, U + W$.
+\end{example}
+\begin{itemize}
+    \item U: a general vector in $U$ is of the form
+    \begin{align*}
+        u &= (a,b,-a-b) & \text{for} \> a,b \in \mathbb{R}\\
+        u &= a(1,0,-1) + b(0,1,-1)\\
+    \end{align*}
+    so $\{(1,0,-1. 0,1,-1)\}$ is a spanning set for $U$. Clearly it is also linearly independent, as the equation
+    \[\alpha_1(1,0,-1) + \alpha_2(0,1,-1) = \begin{pmatrix}\alpha_1\\0\\\alpha_1\end{pmatrix} + \begin{pmatrix}0\\\alpha_2\\-\alpha_2\end{pmatrix} = 0\]
+    which gives $\alpha_1 = \alpha_2=0$
+    \item W: Using similar methods, $\{(2,1,0), (1,0,1)\}$ is a basis for $W$, as any $w \in W$ is of the form $w = (2a+b, a, b)$
+    \item $U+W$: By 3.7.6, $\{(1,0,-1), (0,1,-1), (2,1,0), (1,0,1)\}$ spans $U+W$. Clearly it's not linearly independent, so we can row reduce to get one. By row reductions we get 
+    \[U+W = \text{Span}\{(1,0,0),(0,1,0),(0,0,1)\} = \mathbb{R}^3\]
+    \item $U \cap W$: Let $x = (x_1, x_2, x_3) \in \mathbb{R}^3$. 
+    \begin{align*}
+        x \in U &\iff x_1 + x_2 + x_3 =0\\
+        x \in Q &\iff -x_1 + 2x_2 + x_3 = 0
+    \end{align*}
+    so $x \in U\cap W$ iff
+    \[x+1 + x_2 + x_3 = -x_1 + 2x_2 + x_3 = 0\]
+    so $U \cap W = \{(x_1, x_2, x_3 \in \mathbb{R}^3: z_1 + x_2 + x_3 = -x-1 + 2x_2 + x_3 =0\}$. From this equation we get $x = (x_1, 2x_1, -3x_1)$ so a spanning set is of the form $\{(1,2,-3)\}$ which is LI, so a basis for $U\cap W$.
+\end{itemize}
+\begin{remark}
+A neater way of finding a basis for $U+W$ would be to find a basis for $U \cap W$. Since $U \cap W \leq W$ we could extend this basis to one for $W$. Similarly, we could extend to a basis for $U$. The union of these bases will be a basis for $U + W$. In 3.7.7,
+\begin{align*}
+    B_{U \cap W} &= \{(1,2,-3)\}\\
+    B_U &= \{(1,2,-3), (1,0,-1)\}\\
+    B_W &= \{(1,2,-3), (1,0,1\}\\
+    B_{U + W} &= \{(1,2,-3), (1,0,-1), (1,0,1)\}
+\end{align*}
+\end{remark}
+\begin{theorem}
+Le $V$ be a vector space over $F, U,W \leq V$. Then $\mathrm{dim}(U+W) = \mathrm{dim}(U) + \mathrm{dim}(W) -\mathrm{dim}(U\cap W)$
+\end{theorem}
+\emph{Proof:} Suppose dim$(U) = r, \mathrm{dim}(W) = s, \mathrm{dim}(U\cap W) = m$. Now we have a basis of $U \cap W$:
+\[B_{U \cap W} = \{v_1, ..., v_m \} \]
+Now $U \cap W \leq U$ and $B_{U \cap W}$ is linearly independent, so it is contained in some basis of $U$.
+\[B_U = \{v_1, ..., v_m, u_{m+1}, ..., u_r \}\]
+Similarly, we have a basis for $W$:
+\[ B_W = \{v_1, ..., v_m, w_{m+1}, ..., w_s\}\]
+\emph{Claim:} 
+\[B_U \cup B_W = \{v_1, ..., v_m, u_{m+1}, ..., u_r, w_{m+1}, ..., w_s \} \]
+is a basis for $U+W$.\par
+\emph{Proof of claim:} 
+\begin{itemize}
+    \item By prop 3.7.5, $B_U \cup B_W$ is a \textbf{spanning set}.
+\end{itemize}
+LI: Suppose
+\[\lambda_1v_1 + \cdots + \lambda_mv_m + \alpha_{m+1}v_{m+1} + \cdots + \alpha_ru_r + \beta_{m+1}w_{m+1} + \cdots + \beta_sw_s = 0_v\]
+i.e.
+\[\sum^m_{i = 1}\lambda_iv_i + \sum^r_{i=m+1}\alpha_iu_i + \sum^s_{i=m+1}\beta_iw_i = 0_v\]
+We want $\lambda_i = \alpha_j = \beta_k = 0 \forall i,l,k \in F$. Since the first 2 sums are in $U$, and the second is in $W$, we have
+\[\sum^m_{i=1}\lambda_iv_i + \sum^r_{i=m+1} \alpha_iu_i = -\sum^s_{i=m+1}\beta_iw_i\]
+Thus
+\[\sum^m_{i=1}\lambda_iv_i + \sum^r_{i=m+1} \alpha_iu_i \in U \cap W\]
+So it's in span$(\{v_1, ..., v_m\})$
+\[\sum^m_{i=1}\lambda_iv_i + \sum^r_{i=m+1}\alpha_iu_i = \sum^m_{i=1} \mu_iv_i\]
+Therefore
+\[\sum^m_{i=1}(\lambda_i - \mu_i)v_i + \sum^r_{i=m+1}\alpha_iu_i = 0_v\]
+But $\{v_1, ..., v_m, u_{m+1}, ..., u_r \}$ is LI.
+so
+\begin{align*}
+    \lambda_i - \mu_i &= 0 & \text{for} i \in \{1, ..., m\}\\
+    \alpha_j &= 0 & \text{for} j \in \{m+1, ..., r\}\\
+\end{align*}
+But $\{ v_1, ..., u_m, w_{m+1}, ..., w_s$\} is LI. Therefore
+\begin{align*}
+    \lambda_i &= 0 & \text{for} \> i \in \{1, ..., m\}\\
+    \beta_j &= 0 & \text{for} \> j \in \{m+1, ..., s\}
+\end{align*}
+Which completes the proof of the claim.\par
+So $B_U \cup B_W$ is a basis for $U+W$
+\begin{align*}
+    |B_U| \cup |B_W| &= |B_U| + |B_W| - |B_U \cap B_W|\\
+    &= |B_U|+|B_W|-|B_{U\cap W}|\\
+    &= r+s-m
+\end{align*}
+\qedsymbol
+\subsection{Rank of matrix}
+\begin{definition}
+Let $A \in M_{m \times n}(F)$. Define
+\begin{itemize}
+    \item The row space of $A$ (write RSp(A)) as the span of the rows of $A$. (This is a subspace of $F^n$)
+    \item The column space of A (write CSp(A)) as the span of the columns of A. (This is a subspace of $F^m$
+    \item The row rank of A is dim(RSp(A))
+    \item The column rank of A is dim(CSp(A)).
+\end{itemize}
+\end{definition}
+\begin{example}
+\begin{align*}
+    F = \mathbb{R} &, A = \begin{pmatrix}3&1&2\\0&-1&1\end{pmatrix} & \text{then}\\
+    \text{RSp}(A) &= \text{Span}\{(3,1,2),0,-1,1\} \\
+    \text{CSp}(A) &= \text{Span}\left\{\begin{pmatrix}3\\0\end{pmatrix}, \begin{pmatrix}1\\-1\end{pmatrix}, \begin{pmatrix}2\\1\end{pmatrix}\right\}
+\end{align*}
+\end{example}
+Here's a procedure to calculate the row rank of a matrix A.
+\begin{example} \par
+\begin{enumerate}
+    \item Reduce $A$ to row echelon form (using row ops)
+    \[A_{ech} = \begin{pmatrix}1&x&x&x&\cdots&\cdots\\
+    0&0&1&x&x&\cdots\\
+    0&0&0&1&x&\cdots\\
+    \vdots&&&&&\vdots\\
+    0&\cdots&\cdots&\cdots&\cdots&0
+    \end{pmatrix} \]
+    Actually it doesn't matter whether the leading entries are 1; they just need to be non-zero.
+    \item The row rank of $A$ is the number of non-zero rows in $A_{ech}$. In fact the non-zero rows of $A_{ech}$ form a basis for RSp($A$).
+\end{enumerate}
+\emph{Justification:} It is enough to show that
+\begin{enumerate}
+    \item RSp$(A) = \text{RSp}(A_{ech})$
+    \item The rows of $A_{ech}$ are LI.
+\end{enumerate}
+1) Note that to obtain $A_{ech}$ from $A$ we use row operations:
+\begin{align*}
+    r_i &\rightarrow r_i + \lambda r_j & \lambda \in F, i \neq j\\
+    r_i &\rightarrow \lambda r_i & \lambda \in F\\
+    r_i &\rightarrow r_j
+\end{align*}
+Let $A'$ be obtained from $A$ by using one row operation, then clearly every row of $A'$ lies in RSp$(A)$. So
+\[\text{RSp}(A') \subset \text{RSp}(A)\]
+As every row has an inverse which is also a row op, we get
+\[\text{RSp}(A) \subset \text{RSp}(A')\]
+i.e. their row spans are equal. Therefore doing row operations maintenance the row spaces. So
+\[\text{RSp}(A) = \text{RSp}(A_{ech})\]
+2) Let $i_1, ..., i_k$ be the numbers of the columns of $A_{ech}$ containing the leading entries.\\
+\begin{table}[h!]
+\centering
+    \bordermatrix{
+&i_1=1 &&i_2=3&i_3=4&&i_4=6\cr
+&1&x&x&x&x&x\cr
+&0&0&1&x&x&x\cr
+&0&0&0&1&x&x\cr
+&0&0&0&0&0&1\cr
+&0&\cdots&\cdots&\cdots&\cdots&0\cr
+}\\
+\end{table}
+
+Let $r_1, ..., r_k$ be the non-zero rows of $A_{ech}$ Suppose also that
+\[ \lambda_1 r_1 + \cdots + \lambda_k r_k = 0_v \> \text{for some} \> \lambda_i \in F\]
+Consider the $i_1^{th}$ entry of $\lambda_1 r_1 + \cdots + \lambda_k r_k$, this will be equal to the $i^{th}_1$ entry of $\lambda_1 r_1$ which is $\lambda_1 \cdot 1 = \lambda_1$. As
+\[ \lambda_1 r_1 + \cdots + \lambda_k r_k = 0\]
+We must have $\lambda_1 = 0$. Now consider the $i_2^{th}$ entry similarly, and conclude that $\lambda_2 =0$. By continuing similarly we get $\lambda_1 = \cdots = \lambda_k =0$ as required.
+\end{example}
+\begin{example}
+Find the row rank of
+\[A = \begin{pmatrix}
+1&2&5\\
+2&1&0\\
+-1&4&15 \end{pmatrix} \]
+\end{example}
+Using row reductions, we get
+\begin{gather*}
+\begin{pmatrix}
+1&2&5\\
+2&1&0\\
+-1&4&15 \end{pmatrix}\\
+    \xrightarrow[R_2 \rightarrow R_2 - 2R_1]{R_3 \rightarrow R_3 + R_1}\\
+    \begin{pmatrix}
+    1&2&5\\
+    0&-3&-10\\
+    0&6&20\\
+    \end{pmatrix}\\
+    \xrightarrow[R_2 \rightarrow -\frac{R_2}{3}]{R_3 \rightarrow R_3 + 2R_2}\\
+    \begin{pmatrix}
+    1&2&5\\
+    0&1&\frac{10}{3}\\
+    0&0&0
+    \end{pmatrix}
+\end{gather*}
+So $A_{ech}$ has 2 non-zero rows, so the row rank is 2.
+\begin{example}
+Find the dimension of
+\[W = \text{Span}\{\begin{pmatrix}-1&1&0&1\end{pmatrix}\begin{pmatrix}2&3&1&0\end{pmatrix}\begin{pmatrix}0&1&2&3\end{pmatrix}\}\]
+$W$ is the row span of
+\begin{align*}
+A &= \begin{pmatrix}-1&1&0&1\\
+2&3&1&0\\
+0&1&2&3
+\end{pmatrix}\\
+\xrightarrow{R_2 \rightarrow 2R_1} &\begin{pmatrix}
+-1&1&0&1\\
+0&5&1&2\\
+0&1&2&3
+\end{pmatrix}\\
+\xrightarrow[R_3 \rightarrow R_2]{R_2 \rightarrow R_3} & \begin{pmatrix}
+-1&1&0&1\\
+0&1&2&3\\
+0&5&1&2
+\end{pmatrix}\\
+\xrightarrow{R_3 \rightarrow R_3 -5R_2} & \begin{pmatrix}
+-1&1&0&1\\
+0&1&2&3\\
+0&0&-9&-13
+\end{pmatrix}\\
+\xrightarrow[R_1 \rightarrow -R_1]{R_3 \rightarrow -\frac{R_3}{9}} & \begin{pmatrix}
+1&-1&0&-1\\
+0&1&2&3\\
+0&0&1&\frac{13}{9}
+\end{pmatrix}
+\end{align*}
+Which is $A_{ech}$.
+\end{example}
+We can find the column rank of a matrix in a similar way. One way is to simply use $A^T$ and find the row rank of that matrix, or alternatively to use column operations.
+\begin{theorem}
+For any matrix $A \in M_{n \times m}(F)$, the row rank of $A$ equals the column rank of $A$.
+\end{theorem}
+\emph{Proof:}
+\[ A = \bordermatrix{
+&&&&\mathbf{c_j}&&\cr
+&a_{11}&a_{12}&\cdots&a_{ij}&\cdots&a_{1m}\cr
+&\vdots&&&\vdots&&\vdots\cr
+\mathbf{r_i}&a_{i1}&\cdots&\cdots&a_{ij}&\cdots&a_{im}\cr
+&\vdots&&&\vdots&&\vdots\cr
+&a_{n1}&\cdots&\cdots&a_{nj}&\cdots&a_{nm}\cr
+}\]
+Let $A = (a_{ij})_{n \times m}$. Let the rows be $r_1, ..., r_n$. with 
+\[r_i = (a_{i1}, ..., a_{im})\]
+Let the columns be $c_1, ..., c_m$ with
+\[c_j = \begin{pmatrix}
+a_{1j}\\
+\vdots\\
+a_{nj}
+\end{pmatrix}\]
+Let $k$ be the row rank of $A$, the RSp($A$) has a basis $\{v_1, ..., v_k\}$. Every $r_i$ is a linear combination of $v_1,...,v_k$ i.e.
+\[r_i = \lambda_{i1}v_1 + \cdots + \lambda_{ik}v_k\]
+Suppose now that $v_i = (b_{i1}, ..., b_{ij}, ..., b_{im})^T$. Consider the $j^{th}$ element of 
+\[a_{ij} = \lambda_{i1}b_{1j} + \cdots + \lambda_{ik}b_{kj}\]
+Then
+\[ c_j = \begin{pmatrix}
+a_{1j}\\
+a_{2j}\\
+\vdots\\
+a_{nj}
+\end{pmatrix} = \begin{pmatrix}
+\lambda_{11}b_{1j} + \cdots + \lambda_{1k}b_{kj}\\
+\vdots\\
+\lambda_{m1}b_{1j} + \cdots + \lambda_{mk}b_{kj}
+\end{pmatrix}\]
+so
+\begin{align*}
+    c_j &= \begin{pmatrix}
+    \lambda_{11}\\
+    \vdots\\
+    \lambda_{m1}
+    \end{pmatrix} b_{1j} + \cdots + \begin{pmatrix}
+    \lambda_{1k}\\
+    \vdots\\
+    \lambda_{mk}
+    \end{pmatrix}b_{kj}\\
+    c_j &\in \text{Span}\left\{\begin{pmatrix}
+    \lambda_{11}\\
+    \vdots\\
+    \lambda_{m1}
+    \end{pmatrix}, ..., \begin{pmatrix}
+    \lambda_{1k}\\
+    \vdots\\
+    \lambda_{mk}
+    \end{pmatrix} \right\}
+\end{align*}
+So the column rank of A is $k$.
+\begin{example}
+Let 
+\[A = \begin{pmatrix}
+1&2&-1&0\\
+-1&1&0&1\\
+0&3&-1&1
+\end{pmatrix}\]
+Note that $r_3 = r_1 + r_2$ so $\{r_1, r_2\}$ is LI. So a basis for RSp($A)$ is $\{\begin{pmatrix}1&2&-1&0\end{pmatrix}, \begin{pmatrix}-1&1&0&1\end{pmatrix}\}$. Next we write the rows as a linear combination of the above basis (the first being $v_1$ and the second $v_2$.)
+\begin{align*}
+    r_1 &= 1v_1 + 0v_2\\
+    r_2 &= 0v_1 + 1v_2\\
+    r_3 &= 1v_1 + 1v_2\\
+\end{align*}
+So our $\lambda_{ij}$ are\\
+\[
+\begin{array}{cc}
+\lambda_{11}=1&\lambda_{12}=0\\
+\lambda_{21}=0&\lambda_{22}=1\\
+\lambda_{31}=1&\lambda_{32}=1\\
+\end{array} \]
+According to the proof,
+\[\left\{\begin{pmatrix}1\\0\\1\end{pmatrix}, \begin{pmatrix}0\\1\\1\end{pmatrix}\right\}\]
+Is a spanning set for CSp$(A)$.
+\end{example}
+\begin{definition}
+Let $A$ be a matrix. The \emph{Rank of A} written $\text{rank}(A)$ or $\text{rk}(A)$ is the row rank (equivalently, the column rank) of $A.$
+\end{definition}
+\begin{proposition}
+Let $A \in M_{n \times n}(F).$ The following are equivalent.
+\begin{enumerate}
+    \item $\mathrm{rk}(A) = n$
+    \item The rows of $A$ form a basis for $F^n$.
+    \item The columns of $A$ form a basis for $F^n$.
+    \item $A$ is invertible.
+\end{enumerate}
+\end{proposition}
+\emph{Proof:}
+\begin{itemize}
+    \item $1 \iff 2$
+    \begin{align*}
+        \mathrm{rk}(A) = n &\iff \mathrm{dim}(\mathrm{RSp}(A)) = n\\
+        &\iff \mathrm{RSp}(A) = F^n\\
+        &\iff \mathrm{The} \> \lambda \> \mathrm{rows of} \>A \> \mathrm{span}\> F^n
+        &\iff \mathrm{The} n \mathrm{rows of} A \mathrm{form a basis for} F^n
+    \end{align*}
+    \item $1 \iff 3$: Do the same as above, but replace RSp with CSp.
+    \item$ 1 \implies 4$:
+    \[\mathrm{rk}(A)=n \iff A_{ech} = \begin{pmatrix}
+    1&*&*&\cdots&\cdots\\
+    0&1&*&\cdots&\cdots\\
+    0&0&\ddots&\ddots&\vdots\\
+    \vdots&&&\ddots&\vdots\\
+    0&\cdots&\cdots&\cdots&1
+    \end{pmatrix}\]
+    We can eliminate the $*$ entries with row ops. So $A$ is reducible to $I_n$ and therefore invertible.
+    \item $4 \implies 1$: If $A$ is invertible, then $A$ is reducible to $I_n$ and by definition, the rank of $A$ is $n$.
+\end{itemize}
+\section{Linear transformations}
+\emph{Ben's note:} Holy shit guys we actually did it oh my God that chapter was so fucking long I thought it was never going to actually end\par
+\subsection{Introduction}
+\begin{definition}
+Suppose $V,W$ are vector spaces over $F$, and $T: V \rightarrow W$ a function. We say
+\begin{itemize}
+    \item $T$ \emph{preserves addition} if
+    \[\forall v_1, v_2 \in V, T(v_1 + v_2) = T(v_1) + T(v_2)\]
+    \item $T$ \emph{preserves scalar multiplication} if
+    \[\forall v \in V, \lambda \in F, T(\lambda v) = \lambda T(v)\]
+    \item $T$ is a linear transformation if it does both of these things.
+\end{itemize}
+\end{definition}
+There are several different names for linear transformations, e.g. Linear maps, linear operators and just operators.
+\begin{example}
+Here are a few examples of different linear transformations (or non-examples). With proof of their linearity (or non-linearity).
+\begin{enumerate}
+    \item The identity map of any VS. This is obviously linear.
+    \item \begin{align*}
+        T&: \mathbb{R}^2 \rightarrow \mathbb{R}\\
+        T&(x, y) = x + y
+    \end{align*}
+    \emph{Preserves addition:} let $v_1, v_2 \in \mathbb{R}^2, v_1 = \begin{pmatrix}x_1\\y_1\end{pmatrix}, v_2 = \begin{pmatrix}x_2\\y_2\end{pmatrix}$. Then
+    \begin{align*}
+        T(v_1 + v_2) &= T\left(\begin{pmatrix}x_1\\y_1\end{pmatrix} + \begin{pmatrix}x_2\\y_2\end{pmatrix}\right)\\
+        &= T\left(\begin{pmatrix}x_1 + x_2\\ y_1 + y_2\end{pmatrix}\right)\\
+        &= (x_1 + x_2) + (y_1 + y_2)\\
+        &= (x_1 + y_1) + (x_2 + y_2)\\
+        &= T(v_1) + T(v_2)
+    \end{align*}
+    \emph{Preserves scalar multiplication}: Let $v \in \mathbb{R}^2, \lambda \in \mathbb{R}, v = \begin{pmatrix}
+    x\\y
+    \end{pmatrix}$
+    \begin{align*}
+        T(\lambda v) &= T\left(\lambda\begin{pmatrix}x\\y\end{pmatrix}\right)\\
+        &=T\left(\begin{pmatrix}
+        \lambda x\\ \lambda y
+        \end{pmatrix}\right)\\
+        &= \lambda x + \lambda y\\
+        &= \lambda(x+y) = \lambda T(v)
+    \end{align*} 
+    \item \begin{align*}
+        V = \mathbb{R}[x], T&:\mathbb{R}[x] \rightarrow \mathbb{R}[x]\\
+        T&(f(x)) = \frac{d}{dx}f(x)
+    \end{align*}
+    \emph{Preserves addition}: let $f(x), g(x) \in \mathbb{R}[x]$. Then
+    \begin{align*}
+        T(f(x) + g(x)) &= \frac{d}{dx}(f(x) + g(x))\\
+        &= \frac{d}{dx}f(x) + \frac{d}{dx}g(x)\\
+        &= T(f(x)) + T(g(x))
+    \end{align*}
+    \emph{Preserves multiplication:} let $f(x) \in \mathbb{R}[x], \lambda \in \mathbb{R}$. Then
+    \begin{align*}
+        T(\lambda f(x)) &= \frac{d}{dx} (\lambda f(x))\\
+        &= \lambda \left(\frac{d}{dx}f(x)\right)\\
+        &= \lambda T(f(x))
+    \end{align*}
+    So differentiation is linear.
+    \item $\mathbb{C}$ as a 1-dim vector space over $\mathbb{C}, T(z) = \bar{z}$
+    \emph{Counterexample:} Let $z, \lambda \in \mathbb{C}$. Then
+    \begin{align*}
+        T(\lambda z) &= \overline{\lambda z}\\
+        &= \bar{\lambda} \bar{z}\\
+        &\neq \lambda \bar{z}\> \mathrm{if} \> \lambda \notin \mathbb{R}
+    \end{align*}
+\end{enumerate}
+\end{example}
+\begin{proposition}
+Let $A \in M_{m \times n}(F)$. Define
+\begin{align*}
+    T&:F^n \rightarrow F^m\\
+    T&(v)= Av
+\end{align*}
+Then $T$ is a linear transformation.
+\end{proposition}
+\emph{Proof:} See 2.7.4
+\begin{proposition}
+\begin{enumerate}[label=\alph*]
+    \item Define 
+    \begin{align*}
+        T: \mathbb{R}^3 &\rightarrow \mathbb{R}^2\\
+        T\left(\begin{pmatrix}
+        a_1\\1_2\\a_3
+        \end{pmatrix}\right) &= \begin{pmatrix}
+        a_1-3a_2+a_3\\
+        a_1+a_2-2a_3
+        \end{pmatrix}
+    \end{align*}
+    Then $T$ is linear by 4.1.3 as
+    \[T\begin{pmatrix}
+    a_1\\a_2\\a_3
+    \end{pmatrix}=\begin{pmatrix}
+    1&-3&1\\
+    1&1&-2\\
+    \end{pmatrix}\begin{pmatrix}
+    a_1\\a_2\\a_3
+    \end{pmatrix}\]
+    \item define $\rho_\theta:\mathbb{R}^2\rightarrow \mathbb{R}^2$ to be the anticlockwise rotation through angle $\theta$ about the origin. Then
+    \[\rho_\theta\begin{pmatrix}x_1\\x_2\end{pmatrix}= \begin{pmatrix}
+    \cos\theta&-\sin\theta\\\sin\theta&\cos\theta
+    \end{pmatrix} \begin{pmatrix}x_1\\x_2\end{pmatrix}\]
+    So $\rho_\theta$ is linear.
+    \end{enumerate}
+\end{proposition}
+\begin{proposition}
+Let $T:V\rightarrow W$ be a linear transformation. $V,W$ vector spaces over $F$, $0_v, 0_w$ zeros of $V$ and $W$ respectively. Then
+\begin{enumerate}
+    \item $T(0_v)=0_w$
+    \item If $v = \lambda_1 v_1 + \cdots + \lambda_k v_k$, then $T(v)=\lambda_1 T(v_1) + \cdots + \lambda_k T(v_k)$
+\end{enumerate}
+\end{proposition}
+\emph{Proof:}
+\begin{enumerate}
+    \item T preserves scalar multiplication. So
+    \begin{align*}
+        T(0\cdot 0_v) &= 0\cdot T(0_v) (\in W) & 0 \in F\\
+        &= 0\cdot T(0_w)\\
+        \intertext{But}
+        0 \cdot 0_v &= 0_v\\
+        0 \cdot w &= 0_w & \forall w \in W
+        \intertext{so}
+        T(0_v) = 0_w
+    \end{align*}
+    \item Induction on k:\\
+    Base case where k=1:
+    \[T(\lambda_1 v_1) = \lambda_1T(v_1)\]
+    As $T$ preserves scalar multiplication. Now for the inductive step, suppose we know
+    \[T(\lambda_1v_1 + \cdots + \lambda_kv_k) = \lambda_1T(v_1) + \cdots + \lambda_kT(v_k)\]
+    for any $\lambda_1, ..., \lambda_k \in F, v_1, ..., v_k \in V$. Now consider
+    \begin{align*}
+        T(\lambda_1v_1 + \cdots + \lambda_{k+1}v_{k+1}) &= T(\lambda_1v_1 + \cdots + \lambda_kv_k) + T(\lambda_{k+1}v_{k+1})\\
+        \intertext{And by our inductive hypothesis}
+        &= \lambda_1T(v_1) + \cdots + \lambda_kT(v_k) + \lambda_{k+1}T(v_{k+1})
+    \end{align*}
+    So by induction part 2 is true
+\end{enumerate}
+\begin{example}
+Find a linear transformation $T: \mathbb{R}^2 \rightarrow \mathbb{R}^3$ such that
+\begin{align*}
+    T\left(\begin{pmatrix}
+    1\\0
+    \end{pmatrix}\right) &= \begin{pmatrix}
+    1\\-1\\2
+    \end{pmatrix}\\
+    \intertext{and}
+    T\left(\begin{pmatrix}0\\1\end{pmatrix}\right) &= \begin{pmatrix}
+    0\\1\\3
+    \end{pmatrix}
+\end{align*}
+Since $\left\{\begin{pmatrix}
+1\\0
+\end{pmatrix}, \begin{pmatrix}
+0\\1
+\end{pmatrix}\right\}$ forms a basis of $\mathbb{R}^2$ and
+\[\begin{pmatrix}
+a\\b
+\end{pmatrix} = a\begin{pmatrix}
+1\\0
+\end{pmatrix} + b\begin{pmatrix}
+0\\1
+\end{pmatrix}\]
+we should define
+\begin{align*}
+    T\left(\begin{pmatrix}
+a\\b
+\end{pmatrix}\right) &= aT(\begin{pmatrix}
+1\\0
+\end{pmatrix} + b\begin{pmatrix}
+0\\1
+\end{pmatrix}\\
+&= a\begin{pmatrix}
+1\\-1\\2
+\end{pmatrix} + b\begin{pmatrix}
+0\\1\\3
+\end{pmatrix}\\
+&= \begin{pmatrix}
+a\\-a+b\\2a+3b
+\end{pmatrix}
+\end{align*}
+Then this is a linear transformation as it can be expressed as a matrix
+\[\begin{pmatrix}
+1&0\\
+-1&1\\
+2&3
+\end{pmatrix}\]
+\end{example}
+\begin{proposition}
+Let $V, W$ be vector spaces over $F$. Let $v_1, ..., v_n$ be a basis for $V$ and let $w_1, ..., w_n$ be any vectors in $W$. Then there exists a \emph{unique} linear transformation $T: V\rightarrow W$ with $T(v_i) = w_i, i=1,...,n$.
+\end{proposition}
+\emph{Proof:} First define $T$: Let $v \in V$. As $v_1, ..., v_n$ is a basis for $V$, there exist unique $\lambda_1, ..., \lambda_n \in F$ with $v = \lambda_1v_1 + \cdots + \lambda_nv_n$. Define
+\begin{align*}
+    T(v) &= \lambda_1w_1 + \cdots + \lambda_nw_n\\
+    \intertext{So}
+    T(v_i) &= w_i
+\end{align*}
+As required. Now we need to show $T$ is linear. Let $u,v \in V$. Write
+\begin{align*}
+    v &= \lambda_1v_1 + \cdots + \lambda_nv_n & \lambda_i \in F, \forall i=1,...,n\\
+    u &= \mu_1v_1 + \cdots + \mu_nv_n & \mu_i \in F, \forall i=1,...,n
+    \intertext{Therefore}
+    u+v&= (\mu_1+\lambda_1)v_1 + \cdots + (\mu_n+\lambda_n)v_n\\
+    T(u+v)&=(\mu_1+\lambda_1)w_1 + \cdots + (\mu_n+\lambda_n)w_n\\
+    &= (\lambda_1 w_1 + \cdots + \lambda_n w_n) + (\mu_1 w_1 + \cdots + \mu_n w_n)\\
+    &= T(u) + T(v)
+\end{align*}
+Similarly, for $\alpha \in F, v \lambda_1v_1 + \cdots + \lambda_nv_n$,
+\begin{align*}
+    \alpha v &= \alpha \cdot \lambda_1v_1 + \cdots + \alpha \cdot \lambda_nv_n\\
+    T(\alpha v) &= \alpha\cdot\lambda_1w_1 + \cdots + \alpha\cdot\lambda_nw_n\\
+    &= \alpha(\lambda_1w_1 + \cdots + \lambda_nw_n)\\
+    &= \alpha T(v)
+\end{align*}
+So $T$ is linear. Now to prove uniqueness, suppose instead there exists $S: V \rightarrow W$ a linear transformation with $S(v_i)=w_i, \forall i=1,...,n$. Let
+\begin{align*}
+    v&=\lambda_1v_1 + \cdots + \lambda_nv_n \in V & \lambda_i \in F, \forall i=1,...,n\\
+    \intertext{Then}
+    S(v)&=\lambda_1w_1 + \cdots + \lambda_nw_n = T(v)
+\end{align*}
+\begin{remark}
+This also shows that linear transformations are determined by what they do to a basis.
+\end{remark}
+\begin{example}
+Let $V$ be $\mathbb{R}[x]$ with degree less than or equal to 2. A basis for this is then $\{1,x,x^2\}$. Consider
+\begin{gather*}
+    w_1 = 1+x\\
+    w_2 = x-x^2\\
+    w_3 = 1+x^2
+\end{gather*}
+Then by 4.1.7 there is a unique linear transformation
+\begin{align*}
+    T&:V \rightarrow V
+    \intertext{With}
+    T(1)&=1+x\\
+    T(x)&=x-x^2\\
+    T(x^2)&=1+x^2\\
+    \intertext{If $v= a + bx + cx^2$ then}
+    T(v) &= aT(1) + bT(x) + cT(x^2)\\
+    &= (a+c)+(a+b)x+(-b+c)x^2
+\end{align*}
+\end{example}
+\subsection{Image and Kernel}
+\begin{definition}
+Suppose $T:V\rightarrow W$ is a linear transformation. Then
+\begin{itemize}
+    \item The \emph{Image} of $T$ is the set
+    \[\mathrm{Im}(T)= \{T(v):v \in V\} \subset W\]
+    \item the \emph{Kernel} of $T$ is the set
+    \[\mathrm{Ker}(T)=\{v \in V: T(v)=0\} \subset V\]
+\end{itemize}
+\end{definition}
+\begin{example}
+Let $T: \mathbb{R}^3 \rightarrow \mathbb{R}^2$ be given by
+\[T\begin{pmatrix}
+x_1\\x_2\\x_3
+\end{pmatrix} = \begin{pmatrix}
+3&1&2\\-1&0&1
+\end{pmatrix}\begin{pmatrix}
+x_1\\x_2\\x_3
+\end{pmatrix}\]
+So the image of $T$ is
+\begin{align*}
+    \mathrm{Im}(T)&=\left\{\begin{pmatrix}
+    3x_1+x_2+2x_3\\
+    -x_1+x_3
+    \end{pmatrix}: x_1,x_2,x_3 \in \mathbb{R}\right\}\\
+    &=\left\{\begin{pmatrix}
+    3\\-1
+    \end{pmatrix}x_1 +\begin{pmatrix}
+    1\\0
+    \end{pmatrix}x_2+\begin{pmatrix}
+    2\\1
+    \end{pmatrix}x_2:x_1,x_2,x_3 \in \mathbb{R} \right\}\\
+    &= \mathrm{CSp}(A) = \mathbb{R}
+\end{align*}
+And the kernel of $T$ is
+\begin{align*}
+    \mathrm{Ker}(T) &= \left\{\begin{pmatrix}
+    x_1\\x_2\\x_3
+    \end{pmatrix}\in \mathbb{R}^3: T\begin{pmatrix}
+    x_1\\x_2\\x_3
+    \end{pmatrix}=\begin{pmatrix}
+    0\\0
+    \end{pmatrix}\right\}\\
+    &= \left\{\begin{pmatrix}
+    x_1\\x_2\\x_3
+    \end{pmatrix}\in \mathbb{R}^3: \begin{pmatrix}
+    3x_1+x_2+2x_3\\
+    -x_1+x_3
+    \end{pmatrix}=\begin{pmatrix}
+    0\\0
+    \end{pmatrix}\right\}\\
+    &=\mathrm{Span}\begin{pmatrix}
+    1\\-5\\1
+    \end{pmatrix}
+\end{align*}
+\end{example}
+\begin{proposition}
+Let $T:V\rightarrow W$ be a linear transformation. Then
+\begin{enumerate}
+    \item $\mathrm{Im}(T)$ is a subspace of $W$
+    \item $\mathrm{Ker}(T)$ is a subspace of $V$
+\end{enumerate}
+\end{proposition}
+\emph{Proof:} 1: As $0_V \in V, T(0_v) \in \mathrm{Im}(T)$. So Im($T)$ isn't empty. Let $w_1,w_2 \in \mathrm{Im}(T)$ so there exist $v_1,v_2 \in V$ with $T(v_1)=w_1$ and $T(v_2)=w_2$. So
+\begin{align*}
+    T(v_1+v_2)&=T(v_1)_T(v_2)\\
+    &=w_1+w_2\\
+    &\therefore w_1+w_2 \in \mathrm{Im}(T)\\
+    \intertext{Likewise if $\alpha \in F$}
+    T(\alpha v_1) &= \alpha T(v_1)\\
+    &=\alpha w_1\\
+    &\therefore \alpha w_1 \in \mathrm{Im}(T)
+\end{align*}
+Hence Im($T)$ is a subspace of $W$. \par
+2: \emph{I'll do this over christmas oof}
+\begin{example}
+Let $V_n$ be the vector space of polynomials in $x$ over $\mathbb{R}$ of degree less than $n$. We have
+\[V_0 \leq V_1 \leq \cdots \leq V_n\]
+Define
+\begin{align*}
+    T&: V_n \rightarrow V_{n-1}\\
+    T(f(x)) &= f'(x)
+\end{align*}
+And note $T$ is linear.
+\begin{align*}
+    \mathrm{Ker}(T)&= \{f(x):f'(x)=0\}\\
+    &= \mathrm{constant polynomials}\\
+    &=V_0
+\end{align*}
+Suppose $g(x) \in V_{n-1}$, then by integrating we can find $f(x) \in V_n$ such that $f'(x)=g(x)$. So
+\begin{align*}
+    T(f(x))&=g(x) \in \mathrm{Im}(T)\\
+    \mathrm{Im}(T) &= V_{n-1}
+\end{align*}
+Note: for $c \in V_0, T(f(x)+c) = g(x)$. In fact, the set
+\[\{h(x):h'(x)=g(x)\} = \{f(x) + s(x): s(x) \in \mathrm{Ker}(T)\}\]
+\end{example}
+\begin{proposition}
+Let $T:V\rightarrow W$ be a linear transformation. Let $v_1, v_2 \in V,$ then $T(v_1) = T(v_2)$ iff $v_1-v_2 \in \mathrm{Ker}(T)$.
+\end{proposition}
+\emph{Proof:} $T(v_1)=T(v_2) \iff T(v_1)-T(v_2) = 0_W \iff T(v_1-v_2)=0_W \iff v_1-v_2 \in \mathrm{Ker}(T)$
+\begin{proposition}
+Let $T:V\rightarrow W$ be a lineart transformation. Suppose $v_1,...,v_n$ is a basis for $V$. Then $\mathrm{Im}(T) = \mathrm{Span}\{T(v_1),...,T(v_n)\}$.
+\end{proposition}
+\emph{Proof:} It's clear that $\mathrm{Span}\{T(v_1),...,T(v_n)\} \subset \mathrm{Im}(T)$. Now let $w \in \mathrm{Im}(T).$ Then there is $v \in V$ such that $T(v)=w$. Now, as $v \in V$ there are $\lambda_1,...,\lambda_n \in F$ such that
+\begin{align*}
+    v &= \lambda_1v_1 + \cdots + \lambda_nv_n\\
+    T(v)&= T(\lambda_1v_1+\cdots+\lambda_nv_n)\\
+    &= \lambda_1T(v_1) + \cdots + \lambda_nT(v_n)\\
+    w&=\lambda_1T(v_1) + \cdots + \lambda_nT(v_n) \in \mathrm{Span}\{T(v_1),...,T(v_n)\}
+\end{align*}
+\begin{proposition}
+Let $A \in M_{m \times n}(F)$. Let 
+\begin{align*}
+    T&:F^n \rightarrow F^m\\
+    T(v) &= Av
+\end{align*}
+Then \begin{enumerate}
+    \item $\mathrm{Ker}T$ is the solution space for $Av=0$.
+    \item $\mathrm{Im}T$ is the column space of $A$.
+    \item $\mathrm{dim}(\mathrm{Im}(T)) = \mathrm{rank}A$
+\end{enumerate}
+\end{proposition}
+\emph{Proof:}
+\begin{enumerate}
+    \item Immediate from definitions.
+    \item Take the standard basis for $F^n$ i.e.:
+    \[e_i = \begin{pmatrix}
+    0\\\vdots\\1\\\vdots\\0
+    \end{pmatrix} \]
+    with the 1 in the $i^{th}$ row. Then by 4.2.6 we have $\mathrm{Im}(T) = \mathrm{Span}\{T(e_1),...,T(e_n)\}$
+    \[Te_i = Ae_i = c_i\] where $c_i$ is the $i^{th}$ column of $A$. So
+    \begin{align*}
+        \mathrm{Im}(T) &= \mathrm{Span}\{c_1,...,c_n\}\\
+        &=\mathrm{CSp}(A)
+    \end{align*}
+    \item \begin{align*}
+        \mathrm{Im}(T) &= \mathrm{dim}(\mathrm{CSp}(A))\\
+        &=\mathrm{rank}(A)
+    \end{align*}
+\end{enumerate}
+\begin{theorem}
+\emph{Rank-Nullity Theorem}: Let $T:V\rightarrow W$ be a linear transformation. Then 
+\[\mathrm{dim}(V) = \mathrm{dim}(\mathrm{Im}T) + \mathrm{dim}(\mathrm{Ker}T)\]
+\end{theorem}
+\emph{Proof:} Let $\{u_1,...,u_s\}$ be a basis for $\mathrm{Ker}T$. And let $\{w_1,...,w_r\}$ be a basis for $\mathrm{Im}T$. Then for each $w_i \in \mathrm{Im}T$, there is a $v_i \in V$ with $T(v_i)=w_i$.\par
+\emph{Claim:} $B = \{u_1, ..., u_s\} \cup \{v_1,...,v_r\}$ is a basis for $V$.\par
+\emph{Proof of claim:}
+\begin{enumerate}
+    \item Spanning set: Let $v \in V$, since $T(v) \in \mathrm{Im}(T)$ we have
+    \begin{align*}
+        T(v) &= \lambda_1w_1 + \cdots + \lambda_rw_r\\
+        \intertext{For some $\lambda_1,...,\lambda_r \in F$}
+        &= \lambda_1T(v_1) + \cdots + \lambda_rT(v_r)\\
+        &= T(\lambda_1v_1 + \cdots + \lambda_rv_r)
+    \end{align*}
+    as $T$ is a linear transformation. Then by 4.2.5
+    \begin{align*}
+        v&-(\lambda_1v_1 + \cdots + \lambda_rv_r) \in \mathrm{Ker}(T)\\
+        \intertext{so}
+        v&-(\lambda_1v_1 + \cdots + \lambda_rv_r) =\mu_1u_1+\cdots+\mu_su_s\\
+        \intertext{for some $\mu_1,...,\mu_s \in F.$ So}
+        v&= \lambda_1v_1 + \cdots + \lambda_rv_r + \mu_1u_1 + \cdots + \mu_su_s \in \mathrm{Span}(B)
+    \end{align*}
+    \item Linear Independence: Suppose
+    \[\lambda_1v_1 + \cdots + \lambda_rv_r + \mu_1u_1 + \cdots + \mu_su_s = 0_v\]
+    Apply $T$ to this equation:
+    \begin{align*}
+        T(\lambda_1v_1 + \cdots + \lambda_rv_r + \mu_1u_1 + \cdots + \mu_su_s)&= T(0_v)\\
+        \lambda_1T(v_1) + \cdots + \lambda_rT(v_r) + \mu_1T(u_1) + \cdots + \mu_sT(u_s) &=0_w\\
+        \intertext{And since $T(v_i) = w_i, T(u_i) = 0_w, \forall i,$}
+        \lambda_1w_1 + \cdots + \lambda_rw_r &=0_w\\
+        \intertext{As $\{u_1,...,u_r\}$ is a basis for Im$(T)$,}
+        \lambda_1=\lambda_2=\cdots=\lambda_r&=0\\
+        \mu_1u_1 + \cdots + \mu_su_s &=0_v\\
+        \intertext{Since $\{u_1,...,u_s\}$ is a basis for Ker$(T)$,}
+        \mu_1 = \cdots = \mu_s &= 0
+    \end{align*}
+    So B is linearly independent.
+\end{enumerate}
+\begin{example}
+Ever have that feeling when you see an example and you're just like hmm no I need to nap, well that's me rn haha
+\end{example}
+\begin{corollary}
+A system of linear equations in $n$ unknowns with coefficients in $F$ is called \emph{homogenous} if all equations are equal to zero. We can represent this as $Ax = 0_{f^m}$. We know we will always get at least a trivial solution i.e. $x=0_{f^n}$. We saw in the mid-module tests that the solution space is a subspace... but of what dimension?
+\end{corollary}
+We can use the rank-nullity theorem: using $A: F^n \rightarrow F^m$. By 4.2.7 the solution space is $\mathrm{Ker}(A)$ and by the rank-nullity theorem
+\[\mathrm{dim}(\mathrm{Ker}(A))=\mathrm{dim}(F^n)-\mathrm{dim}(\mathrm{Im}(A))\]
+And if rank$(A)=n$ then we get one solution (the trivial one). If $\mathrm{rank}(A)<n$, then the solution space has $\mathrm{dim} \geq 1$. If $F$ is infinite, then you get infinitely many solutions.
+
+\subsection{Representing vectors and transformations with respect to a basis}
+
+Let $V$ be $n$-dimensional $F$-vector space and denote the basis of $F$ by $B = \{v_1,v_2,\ldots,v_n\}$.
+\begin{definition}
+    For $v\in V$ such that $v = \lambda_1v_1+\ldots+\lambda_nv_n,$ the vector of $v$ with respect to $B$ is $$[v]_B = \begin{pmatrix}\lambda_1 \\ \lambda_2 \\ \vdots \\ v_n\end{pmatrix}$$ Observe simply that this is well defined by the linear independance of basis $B$.
+\end{definition}
+\begin{example}
+    $V = \mathbb{R}^3$, $B = \{e_1,e_2,e_3\}$. Then: $$[\begin{pmatrix}a\\b\\c\end{pmatrix}]_B = \begin{pmatrix}a\\b\\c\end{pmatrix}$$
+\end{example}
+\begin{example}
+    Let $V$ be a vector space of polynomials with degree less than 2. Let $B = \{1,x,x^2\}$. Then: $$[a+bx+cx^2]_B = \begin{pmatrix} a\\b\\c\end{pmatrix}$$
+    If $B = \{x^2,x,1\}$ then $$[a + bx +cx^2]_B = \begin{pmatrix} c\\b\\a\end{pmatrix}$$
+\end{example}
+\begin{proposition}
+    Let $V$ be an $n$-dimensional $F$-vector space with basis $B$. Then the map $T:V\rightarrow F^n$ such that $T(v) = [v]_B$ is bijective and linear.
+\end{proposition}
+\emph{proof.} WLOG, denote $B = \{b_1,b_2,...,b_n\}$. \\
+1. Linear transformation
+\begin{itemize}
+    \item Preserves addition
+\end{itemize}
+Let $u,v\in V$ and represent $u,v$ as such: $$u = \lambda_1 b_1+\ldots + \lambda_nb_n$$ $$v = \mu_1b_1+\ldots+\mu_nb_n.$$ $$[u]_B=\begin{pmatrix}\lambda_1\\ \vdots \\ \lambda_n\end{pmatrix}, [v]_B = \begin{pmatrix}\mu_1\\ \vdots \\ \mu_n\end{pmatrix}, [u+v]_B = \begin{pmatrix}\lambda_1+\mu_1\\ \vdots \\ \lambda_n+\mu_n\end{pmatrix}$$ $$[u+v]_B = [u]_B+[v]_B.$$ i.e. $$T(u+v) = [u+v]_B = [u]_B+[v]_B = T(u) + T(v).$$
+\begin{itemize}
+    \item Preserves scalar multiplication
+\end{itemize}
+Similar to checking that addition is well defined. Left as an exercise to the reader \\
+2. Bijective
+\begin{itemize}
+    \item Injective
+\end{itemize}
+Let $u,v$ such that $T(u) = T(v)$, implying $T(u-v) = 0$. so $$[u-v]_B = 0_{F^n} = \begin{pmatrix}0\\ \vdots \\ 0\end{pmatrix}$$ \begin{align*} u-v &= 0b_1 + \ldots + 0b_n \\ &=0\end{align*} so $u = v$ and $T$ is injective.
+
+\begin{itemize}
+    \item Surjective
+\end{itemize}
+Let $v = \begin{pmatrix}\alpha_1\\ \vdots \\ \alpha_n\end{pmatrix}\in F^n$. Then clearly $[\alpha_1b_1+\ldots + \alpha_nb_n]_B = v$ so $T(\alpha_1b_1+\ldots + \alpha_nb_n) = v$ so $T$ is surjective.
+\setcounter{subsubsection}{4.3.3}
+\subsubsection{Construction}
+Let $V,W$ be finite-dimension $F$-vector spaces with bases $B$ and $C$ respectively. Let $T:V\rightarrow W$  be a linear transformation. We want to construct a map $\varphi:F^n\mapsto F^m$ to give rise to the following commutative diagram:
+$$\begin{tikzcd}
+    V\arrow[r, "T"]\arrow[d] &W\arrow[d]\\
+    F^n\arrow[r,"\varphi"]\arrow[u] &F^m\arrow[u]
+\end{tikzcd}$$
+
+$\varphi$ is a linear transformation since the composition of two linear transformations is a linear transformation itself. By our hand in, $\varphi:F^n\mapsto F^m$ is a matrix transformation (coursework 1). Let $A$ be this matrix. Then $$A[v]_B = [Tv]_C$$ We calculate $A$ by figuring out its columns $\gamma_1,\ldots,\gamma_n$. To calculate $\gamma_1$ we work out $T(b_i) = a_{1i}c_1+\ldots + a_{mi}c_m$ so $$\gamma_i = \begin{pmatrix}a_{1i}\\ \vdots \\ a_{mi}\end{pmatrix}$$
+\begin{definition}
+The matrix constructed above is the \emph{matrix of $T$ with respect to $B$ and $C$}. We write $_C[T]_B$. So
+\[_C[T]_B[v]_B=[Tv]_C\]
+\end{definition}
+\begin{proposition}
+If $T:V\rightarrow V$ and $B$ is a basis for $V$ then for all $v \in V, [Tv]_B = [T]_B[v]_B$.
+\end{proposition}
+\begin{example}
+    \begin{align*}
+        T&:\mathbb{R}^2\rightarrow \mathbb{R}^2\\
+        T(x_1,x_2)&= \begin{pmatrix}
+        2x_1-x_2\\ x_1+2x_2
+        \end{pmatrix}
+    \end{align*}
+    \begin{itemize}
+        \item Take $E= \left\{\begin{pmatrix}
+        1\\0
+        \end{pmatrix},\begin{pmatrix}0\\1\end{pmatrix}\right\}$. Find $[T]_E$.
+        \begin{align*}
+        T\vectii{1}{0} &= \vectii{2}{1}=2\vectii{1}{0}+1\vectii{0}{1}\\
+        T\vectii{0}{1}&=\vectii{-1}{2}=-1\vectii{1}{0}+2\vectii{0}{1}\\
+        [T]_E&= \begin{pmatrix}2&-1\\1&2\end{pmatrix}
+        \end{align*}
+        \item Let $B = \left\{\vectii{1}{1}, \vectii{0}{1}\right\}$. Find $[T]_B$.
+        \begin{align*}
+        T\vectii{1}{1}&=\vectii{1}{3}=1\vectii{1}{1}+2\vectii{0}{1}\\
+        T\vectii{0}{1}&=\vectii{-1}{2}=-1\vectii{1}{1}+3\vectii{0}{1}\\
+        [T]_B&=\begin{pmatrix}1&-1\\2&3\end{pmatrix}
+        \end{align*}
+        \item Find $_B[T]_E$
+        \begin{align*}
+        T\vectii{1}{0}&=\vectii{2}{1}=2\vectii{1}{1}-1\vectii{0}{1}\\
+        T\vectii{0}{1}&=\vectii{-1}{2}=-1\vectii{1}{1}+3\vectii{0}{1}\\
+        _B[T]_E&= \begin{pmatrix}2&-1\\-1&3\end{pmatrix}
+        \end{align*}
+    \end{itemize}
+\end{example}
+\begin{proposition}
+Let $V$ be a vector space over $F$. 
+\[ \begin{array}{c}
+    B=\{v_1, ..., v_n\}\\
+    C=\{w_1,...,w_n\}
+\end{array} \bigg\} \text{bases for }V\]
+Then for $j \in [1,...,n]$,
+\[v_j=\lambda_{1j}w_1+\cdots\lambda_{nj}w_n\]
+Let $P$ be the matrix $[\lambda_{ij}]_{n \times n}$ so the $j^{th}$ column is $[v_j]_C$. Then
+\begin{itemize}
+    \item $P=[X]_C$ where $X:V \rightarrow V$ is the unique linear transformation such that $X(w_j)=v_j$ for all $j$.
+    \item For all $v \in V, P[v]_B=[v]_C$.
+    \item $P = _C[Id]_B$ where $Id:V \rightarrow V$ is the identity transformation.
+\end{itemize}
+\end{proposition}
+\emph{Proof}:
+\begin{itemize}
+    \item the $j^{th}$ column of $[x]_C$ is the image of $X(w_j)$ written as a vector in $C$. Now $X(w_j)=v_j$, so the $j^{th}$ column is $[v_j]_C$ which is the $j^{th}$ column of $P$. Thus $[x]_C=P$.
+    \item For a basis vector $v_j \in B$, we have \begin{align*}
+        P[v_j]_B&=P_{ej}\\
+        &= j^{th} \> \text{column of} \> P\\
+        &= [v_j]_C
+    \end{align*}
+    so this is true for elements of the basis $B$ - hence is true for all $v \in V$
+\end{itemize}
+\begin{definition}
+P is the \emph{change of basis matrix} from $B$ to $C$
+Warning: This is confusing because of Part 1 of Proposition 4.3.8 i.e $= [x]_C$ where $X(w_j)=v_j$ with $w_j \in C$ and $v_j \in B$. Be careful when reading about this!
+\end{definition}
+\begin{proposition}
+Let $V,B,C$ and $P$ be as above.
+\begin{itemize}
+    \item P is invertible and its inverse is the change of basis matrix from C to B
+    \item Let $T:V \rightarrow V$ be a linear transformation, then $[T]_C = P[T]_BP^{-1}$
+\end{itemize}
+\end{proposition}
+\emph{Proof}:
+\begin{itemize}
+    \item Let $Q$ be the change of basis matrix from $C$ to $B$. 
+    $$\emph{$Q[v]_C = [v]_B \hspace{5mm} \forall \> $v$ \> \in \> $V$ $}$$
+    $$\emph{$P[v]_B = [v]_C \hspace{5mm} \forall \> $v$ \> \in \> $V$ $}$$
+    Hence:
+    \begin{align*}
+        QP[v]_B = Q[v]_C = [v]_B
+    \end{align*}
+     As $v$ ranges over $V$, we have that $[v]_B$ ranges over $F^n$\\
+     Hence we get $QPx = x \>\> \forall x \in F^n$ and similarly, $PQx = x \>\> \forall x \in F^n$. Therefore $QP=PQ=I_n$ and we get $Q=P^{-1}$
+     \item Take a vector $[v]_C \in F^n$:
+     \begin{align*}
+         [T]_C[v]_C &= [T(v)]_C\\
+         (P[T]_BP^{-1})[v]_C &= (P[T]_BP^{-1})(P[v]_B)\\
+         &= (P[T]_B)(P^{-1}P)([v]_B)\\
+         &= P[T]_B[v]_B\\
+         &= P[T(v)]_B\\
+         &= [T(v)]_C
+     \end{align*}
+    As this holds $\> \forall \> v \in V$, we get that $[T]_C = P[T]_BP^{-1}$
+\end{itemize}
+\begin{example}
+    \begin{align*}
+        V=\mathbb{R}^2 \hspace{10mm} 
+        T\vectii{x_1}{x_2}= \begin{pmatrix}
+        x_2\\ -2x_1+3x_2
+        \end{pmatrix}
+        \\
+        B=\left\{\begin{pmatrix}
+        1\\1
+        \end{pmatrix},\begin{pmatrix}
+        1\\2
+        \end{pmatrix}\right\}
+        \hspace{5mm}
+        E=\left\{e_1,e_2\right\}
+    \end{align*}
+Calculate $[T]_B$ and $P$, the change of basis matrix from $E$ to $B$ and verify that:
+\begin{align*}
+    [T]_E = \begin{pmatrix}
+    0&1\\
+    -2&3
+    \end{pmatrix}
+\end{align*}
+For $[T]_B$, we have:
+\begin{align*}
+    T\vectii{1}{1}&=\vectii{1}{1}=1\vectii{1}{1}+0\vectii{1}{2}
+    \\
+    T\vectii{1}{2}&=\vectii{2}{4}=0\vectii{1}{1}+2\vectii{1}{2}
+    \\
+    [T]_B&=\begin{pmatrix}
+    1&0\\0&2
+    \end{pmatrix}
+\end{align*}
+For $P$, we want to take a vector from $B$ and end with a vector in $E$ by multiplication by $P$. We can make the task easier by instead going from $E$ to $B$ through $P^{-1}$ in the following way:
+\begin{align*}
+    P^{-1}\vectii{1}{0}&=\vectii{1}{1}=1\vectii{1}{0}+1\vectii{0}{1}
+    \\
+    P^{-1}\vectii{0}{1}&=\vectii{1}{2}=1\vectii{1}{0}+2\vectii{0}{1}
+    \\
+    P^{-1}&=\begin{pmatrix}
+    1&1\\1&2
+    \end{pmatrix}
+\end{align*}
+We can then use this to calculate $P$
+\end{example}
+\begin{remark}
+In fact, if $P$, the change in basis matrix from $B$ to $C$ is $_C[Id]_B$ and $Q$ is the change of basis matrix from $C$ to $D$ (where $D$ is also a basis for $V$) then:
+\begin{align*}
+    QP&=_D[Id]_{CC}[Id]_B\\
+    &=_D[Id]_B
+\end{align*}
+And $QP$ is the change of basis matrix from B to D. \vspace{3mm} \\
+It is easier to find for a given basis $B$ the matrix $_E[Id]_B$ where $E$ is the standard basis. So an easy way to calculate $_C[Id]_B$ is to do this:
+\begin{align*}
+    _C[Id]_B&=_C[Id]_{EE}[Id]_B\\
+    &=(_E[Id]_C)^{-1}_E[Id]_B
+\end{align*}
+This gives us a quick method to calculate change of bases matrices.
+\end{remark}
+\section{Determinants}
+\subsection{Definitions and some properties}
+\begin{definition}
+\begin{itemize}
+    \item Notation: $F$ a field (e.g. $\mathbb{R}, \mathbb{C}, \mathbb{Q}$, etc).
+    \item $n \in \mathbb{N} = \{1,2,...\}$
+    \item $M_n(F)$ is the set of $n \times n$ matrices in $F$.
+    \item $A \in M_n(F)$ write entries as $A = (a_{ij})$.
+\end{itemize} 
+\end{definition}
+\begin{definition}
+If $A \in M_n(F), 1 \leq i,j \leq n,$ let $A_{ij}$ denote the $(n-1) \times (n-1)$ matrix obtained by deleting row $i$ and column $j$ from $A$. This is the \emph{$ij$-minor of $A$}
+\end{definition}
+E.g.
+\[ A = \begin{pmatrix}
+1&2&3\\
+4&5&6\\
+7&8&9
+\end{pmatrix}
+\]
+\[A_{23}=\begin{pmatrix}
+1&2\\
+7&8
+\end{pmatrix}
+\]
+\begin{definition}
+Let $A = (a_{ij}) \in M_n(F)$. Define $\det(A)$ \emph{the determinant} of $A$ inductively on $n$.
+\begin{enumerate}[label=\roman*]
+    \item $n=1: \det(A)=a_{11}$
+    \item $n=2:$ \begin{align*}
+        & \det\begin{pmatrix}
+    a_{11}&a_{12}\\
+    a_{21}&a_{22}
+    \end{pmatrix} \\
+    &= a_{11}a_{22}-a_{12}a_{21}\\
+    &= a_{11}\det(A_{11}) - a_{12}\det(A_{12})
+    \end{align*}
+    \item $n=3:$ \[
+        \det(A)=a_{11}\det(A_{11})-a_{12}\det(A_{12})+a_{13}\det(A_{13})
+    \]
+    \item General $n$. Suppose we have defined the determinant of $(n-1) \times (n-1)$ matrices of $A = (a_{ij}) \in M_n(F)$.
+    \begin{align*}
+        \det(A)&=a_{11}\det(A_{11})-a_{12}\det(A_{12})+\cdots+(-1)^{n+1}a_{1n}\det(A_{1n})\\
+        &= \sum^n_{j=1}(-1)^{j+1}a_{1j}\det(A_{1j})
+    \end{align*}
+    We can also write $\det(A)=|A|$.
+\end{enumerate}
+\end{definition}
+E.g.:
+\begin{align*}
+    \det(A)&=\begin{vmatrix}
+    1&2&0&1\\
+    2&0&-1&1\\
+    -1&2&1&0\\
+    1&0&-2&1
+    \end{vmatrix}\\
+    &= \begin{vmatrix}
+        0&-1&1\\
+        2&1&0\\
+        0&-2&1
+    \end{vmatrix} -2 \begin{vmatrix}
+        2&-1&1\\
+        -1&1&0\\
+        1&-2&1
+    \end{vmatrix}+0-1\begin{vmatrix}
+        2&0&-1\\
+        -1&2&1\\
+        1&0&-2
+    \end{vmatrix}
+\end{align*}
+\begin{theorem}
+Let $A \in M_n(F)$ and $ \alpha \in F$. Let $\ \leq l \leq n$ and  let $B$ be the matrix obtained by multiplying row $l$ of $A$ by $\alpha$. Then
+\[\det(B)=\alpha \det(A)\]
+\end{theorem}
+\emph{Proof:} Case $l = 1$: The $ij$ entry of $B$ is $\alpha_{ij}$ of
+\[A_{ij} = B_{ij}\] So by definition, 
+\begin{align*}
+    \det(B) &= \sum_{j=1}^n(-1)^{j+1}\alpha a_{1j}\det(A_{1j})\\
+    &= \alpha\det(A)
+\end{align*}\par
+Case $l>1$: The $1j$ minor $B_{1j}$ has $l-1$ rows equal to $\alpha$ times the $l-1^{th}$ row of $A_{1j}$. So by induction,
+\[\det(B_{1j}) = \alpha\det(A_{1j})\]
+and as $b_{1j} = a_{1j}$ we obtain by definition
+\[\det(B) = \alpha\det(A)\] \qedsymbol
+\begin{theorem}
+Let $A,B,C \in M_n(F)$ and $1 \leq l \leq n$. Suppose $A,B,C$ are the same except in row $l$, where the $l^{th}$ row of $C$ is the sum of the $l^{th}$ row of $A = B$. Then
+\[\det(C) = \det(A) + \det(B)\]
+\end{theorem}
+\emph{Proof:} exactly like in 5.1.4.
+\begin{theorem}
+Let $A \in M_n(F)$ and $1 \leq l < n$. Suppose rows $l$ and $l+1$ of $A$ are equal. Then $\det(A)=0$.
+\end{theorem}
+\emph{Proof:} by induction on $n$. If $l \geq 2$, this is like the previous result, it follows by an easy induction. So instead suppose that rows 1 and 2 of $A$ are equal, $a_{1j} = a_{2j}$.
+\begin{align*}
+    \det(A)&= \sum_{j=1}^n(-1)^{j+1}a_{1j}\det(A_{1j})\\
+    A_{1j}&=\begin{pmatrix}
+    a_{11}&a_{12}&\cdots&a_{1(j-1)}&a_{1(j+1)}&\cdots&a_{1n}\\
+    a_{31}&a_{32}&\cdots&a_{3(j-1)}&a_{3(j+1)}&\cdots&a_{3n}\\
+    \vdots&&&&&&
+    \end{pmatrix}\\
+    \intertext{Let $A_{1j,k}$ be obtained from $A$ by deleting rows $1,2$ and columns $j$ and $k$}
+    \det(A_{1j}) &= \sum_{k<j}(-1)^{1+k}a_{1k}\det(A_{1j,k})-\sum_{k>j}(-1)^{1+k}a_{1k}\det(A_{1j,k})\\
+    \det(A) &= \sum_{j=1}^n\sum_{k<j}(-1)^{1+j}(-1)^{1+k}a_{1j}a_{1k}\det(A_{1j,k})\\ &-\sum_{j=1}^n\sum_{j<k}(-1)^{1+j}(-1)^{1+k}a_{1j}a_{1k}\det(A_{1j,k})\\
+    &= 0
+\end{align*}
+
+If it is not clear why it is 0, look at the matrix $A$ again and just consider the case of the first two rows. If we take the part of the determinant corresponding to $a_{11}$ and $a_{22}$, this is $a_{11}\cdot a_{22} \cdot \det(A_{11,2})$. Now look at the part of the determinant corresponding to $a_{12}$ and $a_{21}$: this is $a_{12}\cdot a_{21}\cdot \det(A_{11,2}) =a_{22}\cdot a_{11}\cdot \det(A_{11,2})$, they are exactly the same and they cancel out! Since we have to then check for $a_{23}$ and so on, it turns out that you can use the same argument by looking at $a_{13}$ since the part of the determinant on $a_{13}$ will also have a part with the first and third row deleted. And then it is quite obvious to see why the determinant is 0.
+
+\emph{Ben's note:} AND THIS IS WHERE HE STOPPED I'M SORRY I WAS SO CLOSE TO FINISHING THIS PROOOF OH GOOOOD I'M SORRY (i hope my explanation is ok -gabe) [oop yeah that's fine thanks for finishing it off :)]\par
+
+Define the determinant of $A$ to be a map:
+\begin{align*}
+    A &\rightarrow \det A\\
+    M_n(F) &\rightarrow F
+\end{align*}
+\emph{Rules:}
+\begin{axioms}{D}
+    \item If $B$ is obtained from $A$ by multiplyinh a row of $A$ by a scalar $\alpha \in F$, then
+    \[\det(B)=\alpha\det(A)\]
+    \item the Det map is a linear function of the rows of $A$:
+    \[\det\begin{pmatrix}
+    R_1\\
+    \vdots\\
+    R_i + R_i'\\
+    \vdots\\
+    R_n
+    \end{pmatrix} = \det\begin{pmatrix}
+    R_1\\
+    \vdots\\
+    R_i\\
+    \vdots\\
+    R_n
+    \end{pmatrix} + \det\begin{pmatrix}
+    R_1\\
+    \vdots\\
+    R_i'\\
+    \vdots\\
+    R_n
+    \end{pmatrix} \]
+    \item If two consecutive rows of $A$ are equal then $\det(A)=0$
+    \item $\det I_n = 1$ (next theorem)
+\end{axioms}
+\begin{theorem}
+$\det(I_n)=0$
+\end{theorem}
+\emph{Proof:} by induction on $n$. The result is obvious for $n=1$, and by definition of determinant,
+\begin{align*}
+    \det I_n &= 1 \cdot \det(I_{n-1})\\
+    &= 1 & \text{by inductive hypothesis}
+\end{align*}
+It's important to have efficient methods to compute determinants. We work out the efect ot elementary row operations on the determinant:
+\begin{theorem}
+Let $A,B \in M_n(F).$ 
+\begin{enumerate}[label=\roman*]
+    \item Suppose $B$ is obtained from $A$ by swapping rows $i$ and $i+1$. Then $\det(B)=-\det(A)$.
+    \item Suppose $A$ has two equal rows, then $\det(A)=0$
+    \item Suppose $B$ is obtained from $A$ by swapping two rows. Then $\det(B)=-\det(A)$.
+    \item Suppose $ i \neq j$ and $B$ is obtained from $A$ by adding $\alpha \cdot R_i$ to $R_j$:
+    \[B = \begin{pmatrix}
+    R_1\\
+    \vdots\\
+    R_j+\alpha R_i\\
+    \vdots\\
+    R_n
+    \end{pmatrix}\]
+    Then $\det(B) = \det(A)$. This makes determinants easier to compute using Gaussian elimination, e.g.
+    \begin{align*}
+        \begin{vmatrix}
+        1&2&0&1\\
+        2&0&-1&1\\
+        -1&2&1&0\\
+        1&0&-2&1
+        \end{vmatrix} &\stackrel{\text{iv}}{=} \begin{vmatrix}
+        1&2&0&1\\
+        0&-4&-1&-1\\
+        0&4&1&1\\
+        0&-2&02&0
+        \end{vmatrix}\\
+        &\stackrel{\text{D1}}{=} -\begin{vmatrix}
+        1&2&0&1\\
+        0&4&1&1\\
+        0&4&1&1\\
+        0&-2&-2&0
+        \end{vmatrix}\\
+        &=0
+    \end{align*}
+\end{enumerate}
+\end{theorem}
+\emph{Proof:}
+\begin{enumerate}[label=\roman*]
+    \item Just display rows $i, i+1$
+    \begin{align*}
+        0 &= \det\vectiv{\vdots}{R_i+R_{i+1}}{R_i+R_{i+1}}{\vdots}\\
+        &=  \det\vectiv{\vdots}{R_i}{R_i}{\vdots} + \det\vectiv{\vdots}{R_{i}}{R_{i+1}}{\vdots} + \det\vectiv{\vdots}{R_{i+1}}{R_i}{\vdots} + \det\vectiv{\vdots}{R_{i+1}}{R_{i+1}}{\vdots}\\
+        &= 0 +\det(A) + \det(B) = 0\\
+        & \therefore \det(B) = -\det(A)
+    \end{align*}
+    \item Suppose $A$ has two equal rows. Repeatedly swap consecutive rows of $A$ to get a matrix $B$ with two consecutive rows equal. Then $\det(B)=0$ by part i. 
+    \item Same proof for i), but with D3 replaced by ii
+    \item Just display rows $i \neq j$
+    \begin{align*}
+        \det(B) &= \det\begin{pmatrix}
+        \vdots\\
+        R_i\\
+        \vdots\\
+        R_j + \alpha R_i\\
+        \vdots
+        \end{pmatrix}\\
+        &\stackrel{\text{D1,D2}}{=}\det\begin{pmatrix}
+        \vdots\\
+        R_i\\
+        \vdots\\
+        R_j\\
+        \vdots
+        \end{pmatrix} + \alpha\det\begin{pmatrix}
+        \vdots\\
+        R_i\\
+        \vdots\\
+        R_i + \alpha R_i\\
+        \vdots
+        \end{pmatrix}\\
+        &\stackrel{\text{ii}}{=} \det(A)+0
+    \end{align*}
+\end{enumerate}\par
+\begin{corollary}
+If $A,B \in M_n(F)$ are row-equivalent, then $\exists$ a non-zero scalar $\beta \in F$ such that $\det(B) = \beta\det(A)$. Hence
+\[\det(A) = 0 \iff \det(B) = 0\]
+\end{corollary}
+\begin{definition}
+Say $A \in M_n(F)$ is singular if $\exists$ a nonzero vector $v \in F^n$ such that $Av=0$. Otherwuse $A$ is non-singular.
+\end{definition}
+\begin{theorem}
+Let $A \in M_n(F)$. The following are equivalent:
+\begin{enumerate}
+    \item $A$ is invertible.
+    \item $A$ is non-singular.
+    \item The rows of $A$ are linearly independent
+    \item $A$ is row-equivalent to $I_n$.
+    \item $\det(A) \neq 0$
+\end{enumerate}
+\end{theorem}
+\emph{Proof:} (1)-(4) are equivalent by theorems proved last term. \par
+$4 \implies 5$: since $\det(I_n) = 1 \neq 0$, this follows from 5.1.9\par
+$5 \implies 4$: We prove the contrapositive. Suppose $A$ is not row equivalent to $I_n$. By Gaussian Elimination, $A$ is row-equivalent to a matrix $B$ with a row of zeros. Then $\det(B)=0$ and hence $\det(A)=0$ by 5.1.9
+\begin{theorem}
+Let $A \in M_n(F)$. Then 
+\[\det(A) = \sum^n_{j=1}(-1)^{i+1}a_{ij}\det(A_{ij})\]
+e.g.
+\end{theorem}
+\emph{Proof:} Can assume $i>1$. Let
+\[A=\vectiii{R_1}{\vdots}{R_n}\]
+By doing $i-1$ row swaps, we obtain:
+\[B = \begin{pmatrix}
+R_i\\
+R_1\\
+\vdots\\
+R_{i-1}\\
+R_{i+1}\\
+\vdots\\
+R_n
+\end{pmatrix}\]
+(Swap $R_i$ with the row above it $i-1$ times.) Then $\det(B)=(-1)^{i-1}\det(A)$. Also $A_{ij}=B_{1j}$ for each $j$. So
+\begin{align*}
+    \det(A)&=(-1)^{i-1}\det(B)\\
+    &=(-1)^{i-1}\sum^n_{j=1}(-1)^{j+1}b_{1j}\det(B_{1j})\\
+    &=(-1)^{i-1}\sum^n_{j=1}(-1)^{j+1}a_{ij}\det(A_{ij})\\
+    &=\sum^n_{j=1}(-1)^{i+j}a_{ij}\det(A_{ij})
+\end{align*}
+\begin{corollary}
+Suppose $A \in M_n(F)$ is upper triangular.
+\[A = \begin{pmatrix}
+a_{11}&*&*&*\\
+0&a_{22}&\cdots&\cdots&\vdots\\
+&\vdots&&\ddots&\vdots\\
+0&\cdots&\cdots&\cdots&a_{nn}
+\end{pmatrix}\]
+Then $\det(A)=a_{11}a_{22}\cdots a_{nn}$
+\end{corollary}
+\emph{Proof:} By induction on $n$. True for $n=1$. Assume true for $(n-1) \times (n-1)$ upper triangular matrices and let $A \in M_n(F)$. Expand $\det(A)$ along nth row:
+\[\det(A)=a_{nn}\det(A_{nn})\]
+Then by inductive hyothesis
+\[\det(A_nn)=a_{11}\cdots a_{n-1, n-1}\]
+Hence $\det(A) = a_{11} \cdots a_{nn}$ and result follows by induction.
+\emph{Ben's note:} there's a big ol' example here which is row ops to get an upper triangular matrix, and then multiplying the diagonal to get the determinant. If you really wanna see it, this is lecture 4 I think?
+\subsection{Further properties of matrices}
+\emph{STAGGERING RESULT!!!!}
+If $A, B \in M_n(F)$, then
+\[\det(AB)=\det(A)\det(B)\]
+i.e. $\det : M_n(F) \rightarrow F$ is a multiplicative function.\par
+We approach the proof of this theorem via elementary matrices: recap from section 2.4:
+\begin{enumerate}
+    \item Elementary matrices ate obtained from $I_n$ by doing a single row operation.They are:
+    \begin{itemize}
+    \item Multiplies a row by a non-zero number:
+    \[ E_r(\alpha) = \begin{pmatrix}
+    1&0&\cdots&\cdots&0\\
+    0&\ddots&&&\vdots\\
+    \vdots&&\alpha&&\vdots\\
+    \vdots&&&\ddots&\vdots\\
+    0&\cdots&\cdots&\cdots&0
+    \end{pmatrix} \]
+    \item Adds a multiple of row $r$ to row $s$:
+    \[ E_{rs}(\alpha) = \bordermatrix{
+    &&&&&\cr
+    &1&0&\cdots&\cdots&0\cr
+    &0&\ddots&&&\vdots\cr
+    &\vdots&&\ddots&&\vdots\cr
+    s&\vdots&&&1&\alpha\cr
+    r&0&\cdots&\cdots&\cdots&1\cr} 
+    \]
+    \item Swapping row $s$ with row $r$
+    \[
+    E_{rs} = \bordermatrix{
+    &&&&&\cr
+    &1&0&\cdots&\cdots&0\cr
+    s&\vdots&\ddots&1&&0\cr
+    r&0&1&0&&\vdots\cr
+    &\vdots&&&\ddots&\vdots\cr
+    &0&\cdots&\cdots&\cdots&1\cr
+    }
+    \]
+    \end{itemize}
+    \item If $E$ is an elementary matrix and $A \in M_n(F)$ then $EA$ is the matrix obtained by doing the row op to A. 
+    \[E_{rs}(\alpha)A = \begin{pmatrix}
+    R_1\\
+    \vdots\\
+    R_r + \alpha R_s\\
+    \vdots\\
+    R_n
+    \end{pmatrix}\]
+\end{enumerate}
+\setcounter{theorem}{-1}
+\begin{lemma}
+If $A$ is nonsingular, then $\exists$ elementary matrices such that
+\[A = E_1 \cdots E_r\]
+\end{lemma}
+\emph{Proof of 5.2.1}:
+By 5.1.10, $\exists$ a sequence of row ops reducing $A$ to $I_n$. Hence $\exists$ elementary matrices
+\begin{align*}
+    &E_1',...,E_r' \> \text{such that}\\
+    &E_r' \cdots E_2'\cdot E_1' = I_n
+\end{align*}
+Hence
+\begin{align*}
+    A &= (E_1')^{-1}\cdots (E_r')^{-1}\\
+    &= E_r \cdots E_1
+\end{align*}
+We'll be right back to the proof after this lemma:
+\begin{lemma}
+If $A, E \in M_n(F)$ with $E$ elementary, then
+\[\det(EA)=(\det(E))(\det(A))\]
+\end{lemma}
+\emph{Proof:} 
+\begin{enumerate}
+    \item If $E = E_{rs}(\alpha)$ then $\det(E)=1$ and
+\[\det(EA)= \det\begin{pmatrix}
+R_1\\\vdots\\R_i + \alpha R_j\\ \vdots\\ R_n
+\end{pmatrix} = \det(A)\]
+By 5.1.8. So $\det(A) = \det(E) \cdot \det(A)$
+    \item If $E=E_{rs}$ then $\det(E)=-1$ and $\det(EA)=-\det(A)$ by 5.1.8
+    \item If $E=E_r(\alpha)$ then $\det(E)=\alpha$ and $\det(EA)=\alpha\det(A)$ by (D1).
+\end{enumerate}
+\begin{lemma}
+Let $A,B \in M_n(F)$. Then
+\begin{enumerate}
+    \item $AB$ is singular iff either $A$ or $B$ is singular.
+    \item $\det(AB)=0$ iff either $\det(A)$ or $\det(B)$ are 0
+\end{enumerate}
+\end{lemma}
+\emph{Proof:} Problem sheet 1
+\begin{theorem}
+If $A,B \in M_n(F)$, then $\det(AB)=\det(A)\det(B)$. 
+\end{theorem}
+\emph{Proof:} If either $A$ or $B$ is singular, this follows from the previous lemma. So suppose both $A$ and $B$ are non-singular. Then by 5.2.0, $\exists$ elementary matrices $E_1,..,E_r$ and $E_1',...,E_s'$ such that
+\begin{align*}
+    A &= E_1 \cdots E_r\\
+    B &= E_1' \cdots E_s'
+\end{align*}
+ then 
+ \[AB= E_1 \cdots E_r \cdot E_1' \cdots E_s'\]
+ Applying 5.2.1 repeatedly,
+ \begin{align*}
+     \det(A) &= (\det(E_1))(\det(E_2))\cdots (\det(E_r))\\
+     \det(B) &= (\det(E_1')) \cdots (\det(E_s'))\\
+     \det(AB) &= (\det(E_1))(\det(E_2))\cdots(\det(E_r)) \cdot (\det(E_1')) \cdots (\det(E_s'))
+     &= \det(A) \cdot \det(B)
+ \end{align*}
+ \begin{theorem}
+ For $A \in M_n(F)$, 
+ \[\det(A^T)=\det(A)\]
+ \end{theorem}
+\begin{corollary}
+Suppose $1 \leq j \leq n$, then
+\[\det(A)=\sum_{i=1}^n(-1)^{i+j}a_{ij}\det(A_{ij})\]
+(this is expansion down column $j$)
+\end{corollary}
+\emph{Proof:}
+\begin{align*}
+    &\>\>\det(A)=\det(A^T)\\
+    &=\sum_{i=1}^n(-1)^{i+j}a_{ij}\det((A^T)_{ji}) & \text{expanding along row $i$}
+\end{align*}
+since $(A^T)_{ji}=(A_{ij})^T$, this gives the result.\par
+\emph{Example:} (Vandermonde Determinant): let $n >> 2, x_1, ..., x_n \in F$.
+\[\det\begin{pmatrix}
+1&x_1&x_1^2& \cdots & x_1^{n-1}\\
+1&x_2&x_2^2&\cdots&x_2^{n-1}\\
+\vdots&&&&\vdots\\
+1&x_n&x_n^2&\cdots&x_n^{n-1}
+\end{pmatrix} = \prod_{1 \leq i < j \leq n}(x_j-x_i)\]
+\emph{Note:} This is 0 if and only if $x_i=x_j$ for some $i \neq j$.\par
+\emph{Proof:} by induction on $n$. Base case $n=2$ is true. Then assume true for $(n-1) \times (n-1)$. Use column operations to clear row 1: do $C_n-x_1C_{n-1}, C_{n-1}-x_1C_{n-2}, \cdots, C_2-x_1C_1$:
+\begin{align*}\det &= \det\begin{pmatrix}
+1&0&0&0&\cdots&0\\
+1&x_2-x_1&\cdots&\cdots&(x_2-x_1)x_2^{n-3}&(x_2-x_1)x_2^{n-2}\\
+\vdots&&&&&\vdots\\
+1&(x_n-x_1)&\cdots&\cdots&(x_n-x_1)x_n^{n-3}&(x_n-x_1)x_n^{n-2}
+\end{pmatrix}\\
+&= \det\begin{pmatrix}
+(x_2-x_1)&\cdots&(x_2-x_1)x_2^{n-3}&(x_2-x_1)x_2^{n-2}\\
+\vdots&&&\vdots\\
+x_n-x_1&\cdots&(x_n-x_1)x_n^{n-3}&(x_n-x_1)x_n^{n-2}
+\end{pmatrix}\\
+&= (x_2-x_1) \cdots(x_n-x_1)\det(\text{Some matrix left over})\\
+&= (x_2-x_1)\cdots(x_n-x_1)\prod_{z \leq i < j \leq n}(x_j - x_i)
+\end{align*}
+\subsection{Inverting}
+\begin{definition}
+Let $A = (a_{ij}) \in M_n(F), 1 \leq i,j, \leq n$. The $ij$ \emph{cofactor} of $A$ is
+\[c_{ij}=(-1)^{i+j}\det(A_{ij})\]
+Let $C = (c_{ij}) \in M_n(F)$. The \emph{Adjugate} of $A$ is $\mathrm{adj}(A)=C^T$.
+\end{definition}
+\begin{theorem}
+\[\mathrm{adj}(A)A=\det(A)I_n\]
+So if $\det(A) \neq 0, a^{-1}= \frac{1}{\det(A)}\mathrm{adj}(A)$
+\end{theorem}
+\emph{Example:} the guy does an inverse of a matrix here, it's long winded and there's lots of matrices, this is lecture 5 if you guys wanna see how it's done in the long winded way. This was in the FP maths curriculum at a-level I'm pretty sure tho so might not be that necessary to re-do.\par
+\emph{Proof:} The $ji$ entry of 
+\begin{align*}
+    C^TA&=\sum_{i=1}^nc_{ij}a_{ij}\\
+    &= \sum_{i=1}^n(-1)^{i+j}\det(A_{ij})a_{ij}\\
+    &=\det(A)\\
+    \intertext{If $j \neq k$ the $jk$ entry of}
+    C^TA &= \sum_{j=1}^nc_{ij}a_{ik}
+\end{align*}
+To compare this we never use the entries in column $j$ of $A$... so, for the purpose of the calculation, we can assume that column $j$ is the same as column $k$ in the original matrix. Then the formula is:
+\begin{equation*}
+    \sum_{i=1}^nc_{ij}a_{ij}=0\\
+\end{equation*}
+as it's the determinant of a matrix with 2 columns... so we have the result.
+\begin{corollary}
+If $A$ is an $n \times n$ matrix of integers and $\det(A)=\pm1$, then $A^{-1}$ is also a matrix of integers (because $\mathrm{adj}(A)$ is also a matrix of integers)
+\end{corollary}
+\subsection{The Determinant of a Linear Transformation}
+Suppose $V$ is a finite dimensional vector space over a field $F$ and $T:V \rightarrow V$ is a linear transformation. Let $B$ be a basis of $V$ and consider $M = [T]_B$. 
+\par
+\emph{Define} $\det(T)=\det(M)$. Why does this not depend on the choice of basis $B$?\par
+\emph{The Bateman Hypothesis:} uhh probably something to do with the change of basis formula idk
+\begin{align*}
+    [T]_B &= P^{-1}[T]_CP\\
+    \det([T]_B) &= \det(P^{-1}[T]_cP)\\
+    \intertext{Since $\det(AB)=\det(BA)$,}
+    &= \det(P^{-1}P[T]_C) = \det([T]_C)
+\end{align*}
+\begin{theorem}[Bateman Hypothesis]
+The determinant of a linear transformation $T$ does not depend on the choice of basis $B$ from which you construct the matrix $[T]_B$
+\end{theorem}
+\emph{Proof:} See above. Also N.B. please don't quote the Bateman hypothesis in tests/coursework pls thanks haha
+\emph{Example:} Let $V$ be a vector space of polynomials of degree $\leq 2$ over $\mathbb{R}$. Let
+\[T:V \rightarrow V, T(p(x))=p(3x+1)\]
+What is $\det(T)$?\par
+Let a basis of $V$ be $B=\{1,x,x^2\}$. Then
+\[[T]_B=\begin{pmatrix}
+1&1&1\\
+0&3&6\\
+0&0&9
+\end{pmatrix}\]
+so $\det(T)=27$
+\section{Eigenvalues and Eigenvectors}
+\subsection{Definitions and Basics}
+\begin{definition}
+\begin{enumerate}
+    \item Suppose $A \in M_n(F)$ and $\lambda \in F$. Say that $\lambda$ is an \emph{Eigenvalue} of $A$ is there is a non zero $\v{v} \in F^n$ such that
+    \[A\v{v} = \lambda \v{v}\]
+    Such a $\v{v}$ is called an \emph{Eigenvector} of $A$.
+    \item Suppose $V$ is a vector space over a field $F$, and $T:V \rightarrow V$ is a linear map. Say $\lambda \in F$ is an eigenvalue of $T$ if there is a non zero $\v{v} \in V$ with $T(\v{v}) = \lambda \v{v}$. Such a $\v{v}$ is called an \emph{eigenvector} of $T$.
+\end{enumerate}
+\end{definition}
+\begin{example}
+\begin{align*}
+    A &= \begin{pmatrix}
+    10&-1&-12\\
+    8&1&-12\\
+    5&-1&-5
+    \end{pmatrix}\\
+    T_A&:\mathbb{R}^3 \rightarrow \mathbb{R}^3\\
+    T_A(\v{v})&=A\v{v}\\
+    \intertext{Let}
+    \v{v_1}&=\vectiii{3}{3}{2}, \v{v_2}=\vectiii{5}{4}{3}, \v{v_3}=\vectii{2}{2}{1}\\
+    \intertext{Then}
+    T_A(\v{v_1})&=A\v{v_1}=1\cdot \v{v_1}\\
+    T_A(\v{v_2})&= A\v{v_2} = 2 \v{v_2}\\
+    T_A(\v{v_3})&=A\v{v_3}=3\v{v_3}
+\end{align*}
+So $\v{v_1}, \v{v_2}, \v{v_3}$ are eigenvectors of $A$ with corresponding eigenvalues $1,2,3$.
+\end{example}
+\emph{Ben's note} I'll try copying these examples here once the notes are released, got a bit behind after typing out the first one.
+\begin{proposition}
+Suppose $V$ is a finite dimensional vector space over $F$ and $B$ is a basis. Let $T:V \rightarrow V$.
+\begin{enumerate}[label=\roman*]
+    \item The eigenvalues of $T$ and the eigenvalues of the matrix $[T]_B$ are equal.
+    \item A vector $\v{v} \in V$ is an eigenvector of $T \iff [\v{v}]_B$ is an eigenvector of $[T]_B$.
+\end{enumerate}
+\end{proposition}
+\emph{Proof:} Two observations:
+\begin{enumerate}
+    \item $[\v{v}]_B = \vectiii{0}{\vdots}{0}\iff\v v = \v 0$
+    \item $T(\v{v})=\lambda \v{v} \iff [T(\v{v})]_B = [\lambda\v{v}]_B \iff \lambda[\v{v}]_B = [T]_B[\v{v}]_B$.
+\end{enumerate}
+\subsection{The Characteristic Polynomial}
+\begin{definition}
+\begin{enumerate}
+    \item Suppose $A \in M_n(F)$ and let $x$ denote a variable. The \emph{Characteristic Polynomial} of $A$ is
+\[\chi_A(x) = \det(xI_n-A)\]
+    \item Suppose $V$ is a finite dimensional vector space over $F$ and $T:V \rightarrow V$ be linear, and $B$ a basis of $V$. Define the \emph{Characteristic Polynomial} of $T$ to be
+    \[\chi_T(x)=\chi_C(x)\]
+    where $C = [T]_B$.
+\end{enumerate}
+\end{definition}
+\begin{remark}
+\begin{enumerate}
+    \item Some people use the characteristic polynomial as $\det(A-xI_n)$ instead of the other way around (like me lmao $A-\lambda I_n$ ftw)
+    \item BUT: $\det(xI_n-A)$ is a polynomial of degree $n$, and the coefficient of $x^n$ is 1.
+\end{enumerate}
+\end{remark}
+In part 2. of definition 6.2.1, $\chi_T(x)$ does not depend on the choice of basis $B$. The proof of this is similar to that of the Bateman Hypothesis.
+\begin{theorem}
+\begin{enumerate}
+    \item If $A \in M_n(F)$ and $\lambda \in F$ then $\lambda$ is an eigenvalue of $A$ iff $\chi_A(\lambda)=0$
+    \item If $V$ is a finite dimensional vector space over $F$, and $T:V \rightarrow V$, then for $\lambda \in F, \lambda$ is an eigenvalue of $T$ iff $\chi_T(\lambda)=0$.
+\end{enumerate}
+\end{theorem}
+\begin{corollary}
+If $A \in M_n(F)$ then $A$ has $\leq n$ eigenvalues.
+\end{corollary}
+\emph{Proof:} 
+\begin{enumerate}
+    \item \begin{align*}
+    &\lambda \> \text{is an eigenvalue of} A\\
+    \iff& \exists v \in V, v\neq 0: Av=\lambda v\\
+    \iff& (\lambda I_n-A)v = 0\\
+    \iff& \det(\lambda I_n-A)=0\\
+\end{align*}
+    \item By (1) and Prop 6.1.3.
+\end{enumerate}\par
+\emph{Notation:} If $A \in M_n(F), \lambda \in F$, let
+\begin{align*}
+    E_\lambda&= \{ \v{v} \in F^n: A\v{v}=\lambda\v{v}\}\\
+    &=\{\v{v} \in F^n: (\lambda I_n - A)\v{v}=0\}
+\end{align*}
+This is a subspace of $F^n$. Sometimes known as the \emph{Eigenspace}.
+\begin{example} 
+\begin{enumerate}[label=(\arabic*)]
+    \item \begin{align*}
+        A &= \begin{pmatrix}
+        2&1\\
+        -1&0
+        \end{pmatrix} \in M_2(\mathbb{R})\\
+        \chi_A(\lambda) &= \det(\lambda I_2- A)=(\lambda-1)^2\\
+        \intertext{The only eigenvalue is therefore 1. Now find the eigenvector(s)}
+        A-1\cdot I_2 &= \begin{pmatrix}
+        1&1\\-1&-1
+        \end{pmatrix} \rightarrow \begin{pmatrix}
+        1&1&0&0
+        \end{pmatrix}
+    \end{align*}
+    So the eigenvectors are all in the span of $\vectii{1}{1}$.
+    \item \begin{align*}
+        A &= \begin{pmatrix}
+        10&-1&-12\\
+        3&1&-12\\
+        5&-1&-5
+        \end{pmatrix} \in M_3(\mathbb{R})\\
+        \chi_A(\lambda) &= \det\begin{pmatrix}
+        \lambda-10&1&12\\
+        -8&\lambda-1&12\\
+        -5&1&\lambda+5
+        \end{pmatrix} = \cdots = (\lambda-1)(\lambda-2)(\lambda-3)
+    \end{align*}
+    So the eigenvalues are $\lambda=1,2,3$. To find the eigenvectors, consider each $\lambda$ in turn:
+    \begin{align*}
+        A-I_3&=\begin{pmatrix}
+        9&-1&-12\\
+        8&0&-12\\
+        5&-1&-6
+        \end{pmatrix}\\
+        &\rightarrow\begin{pmatrix}
+        1&-1&-\\
+        0&8&-12\\
+        0&4&-6
+        \end{pmatrix} \rightarrow \begin{pmatrix}
+        1&-1&0\\
+        0&2&-3\\
+        0&0&0
+        \end{pmatrix}
+    \end{align*}
+    Which gives the solution 
+    \[\v{v}=\vectiii{3}{3}{1} \cdot \alpha \in \mathbb{R}\]
+    And the other eigenvectors are homework :)
+    \item Let $V$ be the vector space of polynomials of degree $\leq 2$ over $\mathbb{R}$. Let $T:V\rightarrow V$ be a linear transformation with
+    \[T(p(t))=p(3t+1)\]
+    Let $B$ be a basis with $B=\{1,t,t^2\}$ and \begin{align*}
+        [T]_B &= \begin{pmatrix}
+        1&1&1\\
+        0&3&6\\
+        0&0&9
+        \end{pmatrix} = A\\
+        \intertext{Then}
+        \chi_T(\lambda)&=\det\begin{pmatrix}
+        x-1&-1&-1\\
+        0&x-3&-6\\
+        0&0&x-9
+        \end{pmatrix}\\
+        &=(x-1)(x-3)(x-9)\\
+        \lambda&=1,3,9\\
+        \intertext{Now find the eigenvectors for these values.}
+        A-3I_3&=\begin{pmatrix}
+        -2&1&1\\
+        0&0&6\\
+        0&0&6
+        \end{pmatrix} \rightarrow \begin{pmatrix}
+        -2&1&1\\
+        0&0&1\\
+        0&0&0
+        \end{pmatrix}\\
+        \therefore E_3&=\vectiii{1}{2}{0}\alpha&\alpha \in \mathbb{R}
+    \end{align*}
+    So the eigenvectors of $T$ are $\alpha(1+2t)$
+
+
+\end{enumerate}
+\end{example}
+\subsection{Diagonalisation}
+\begin{definition}
+\begin{enumerate}[label=(\arabic*)]
+    \item A linear transformation $T:V\rightarrow V$ is \emph{Diagonalisable} if there is a basis of $V$ consisting of eigenvectors of $T$.
+    \item A matrix $A \in M_n(F)$ is \emph{diagonalisable} if there is a basis of $F^n$ consisting of eigenvectors of $A$.
+\end{enumerate}
+\end{definition}
+So if $A \in M_n(F)$ let $T_A:F^n\rightarrow F^n, T_A(v)=Av$. Then $A$ is diagonalisable $\iff T_A$ is diagonalisable. 
+\emph{example:}
+\begin{enumerate}[label=\arabic*)]
+    \item The matrix $A$ in 6.2.4 is diagonalisable.
+    \item \[A = \begin{pmatrix}
+    2&1\\-1&0
+    \end{pmatrix}\]
+    in 6.2.4 isn't diagonalisable (only eigenvectors are multiples of $\vectii{1}{-1}$.
+    \item The linear transformation $T$ in 6.2.4 (3) isn't diagonalisable since $B: \{1,1+2t,1+4t+4t^2\}$ is a basis of $V$.
+\end{enumerate}
+\begin{theorem}
+\begin{enumerate}[label=(\arabic*)]
+    \item Suppose $V$ is a f.d vector space over $F$ and $T:V\rightarrow V$ is a linear transformation. Then $T$ diagonalisable iff there is a basis $B: \v{v}_1,...,\v{v}_n$ of $V$ such that $[T]_B$ is a diagonal matrix
+    \item $A \in M_n(F)$ is diagonalisable iff there is an invertible $P \in M_n(F)$ such that $P^{-1}AP$ is a diagonal matrix. In this case, the columns of $P$ consist of eigenvectors.
+    
+\end{enumerate}
+\end{theorem}
+\emph{Proof:} \begin{enumerate}[label=(\arabic*)]
+    \item Let $B:v_1,...,v_n$ be a basis. Note: $v_i\neq0$. Let $D=[T]_B$ then $D$ is a diagonal matrix:
+    \begin{align*}
+        \iff& \forall j \leq n\\
+        & T(\v{v}_j)=d_{jj}\v{v}_j\\
+        \iff& \text{each $v_j$ is an eigenvector of $T$}
+    \end{align*}
+    \item Suppose $P$ is invertible. The columns $v_1,...v_n$ of $P$ are a basis $B$ of $F^n$ and $P=_E[Id]_B$ where $E$ is the standard basis.
+    \begin{align*}
+        P^{-1}AP&= _B{}[Id]_E{} _E[T_A]_E{} _E[Id]_B\\
+        &= _B{}[T_A]_B
+    \end{align*}
+    This is the diagonal matrix
+    \begin{align*}
+        &\begin{pmatrix}
+        d_1&\cdots&0\\
+        \vdots&\ddots&\vdots\\
+        0&\cdots&d_n
+        \end{pmatrix}\\
+        \iff&T_(\v{v}_j)=d_j\v{v}_j, \forall j\leq n\\
+        \iff&\v{v}_1,...,\v{v}_n \> \text{eigenvectors of $A$}
+     \end{align*}
+\end{enumerate}
+\begin{example}
+\begin{enumerate}[label=(\arabic*)]
+    \item Let $A \in M_2(\mathbb{R})$, 
+    \begin{align*}A&=\begin{pmatrix}
+        0&-1\\
+        1&0
+        \end{pmatrix}\\
+        \chi_A(x)&=x^2+1
+    \end{align*}
+    \item
+    \begin{align*}
+        A &= \begin{pmatrix}
+        0&-1\\
+        1&0
+        \end{pmatrix} \in M_2(\mathbb{C})\\
+        \chi_A(x)&=x^2+1=(x+i)(x-i)
+    \end{align*}
+    So the eigenvalues are $i, -i$
+    \[
+    \begin{array}{c|c}
+        i&\vectii{1}{-i}\\
+        -i&\vectii{1}{i}
+    \end{array}\]
+    These are linearly independent so they're diagonalisable over $\mathbb{C}$.
+\end{enumerate}
+\end{example}
+\begin{example}
+\begin{enumerate}[label=\textcircled{\small{\arabic*}}]
+    \item \emph{Powers and roots of matrices.} Let $A \in M_n(F),$ suppose $P \in M_n(F)$ and $P^{-1}AP=D=\mathrm{Diag}\{d_1,...,d_n\}$. Then for $k \in \mathbb{N}$:
+    \begin{align*}
+        (P^{-1}AP)^k&=P^{-1}A^kP\\
+        D^k&=\mathrm{Diag}(d_1^k,...,d_n^k)\\
+        \text{so} \> A^k&=PD^kP^{-1}
+    \end{align*}
+    Then if $c_1,...,c_n \in F$ and $c_i^k=d_i, \forall i=1,...,n$, then let $E=\mathrm{Diag}(c_1,...,c_n), E^k=D$.
+    \begin{align*}
+        (PEP^{-1})^k&=PE^k{}P^{-1}=PDP^{-1}\\
+        &=A
+    \end{align*}
+    \item \emph{Recurrence relations}
+    The sequences $(L_n)_{n\geq0},(T_n)_{n\geq0}$ of real numbers satisfy $L_0=1000, T_0=8$. and
+    \begin{align*}
+        3L_n&=2L_{n-1}+T_{n-1}\\
+        3T_n=4L_{n-1}+2T_{n-1}
+    \end{align*}
+    Find a general expression for $L_n$ and $T_n$.
+    \begin{align*}
+        \vectii{L_n}{T_n}&=\frac{1}{3}\begin{pmatrix}
+        2&1\\4&2
+        \end{pmatrix}\vectii{L_{n-1}}{T_{n-1}}\\
+        \vectii{L_n}{T_n}&= \frac{1}{3^n}A^n\vectii{L_0}{T_0}
+    \end{align*}
+    So we can find the characteristic polynomial of $A:$
+    \begin{align*}
+        \chi_A(x)&=x^2-4x=x(x-4)\\
+        \intertext{So the eigenvalues are $\lambda=0,4$}
+    \end{align*}
+\end{enumerate}
+\end{example}
+\begin{theorem}
+Suppose $V$ is a vector space over $F$ and $T:V\rightarrow V$ is linear. Suppose $\v{v}_1,...,\v{v}_n$ are eigenvectors of $T$ with $T(\v{v}_i=\lambda_i\v{v}_i$ for $i\leq n, \lambda_i\neq \lambda_j, \forall i\neq j$. Then the $\v{v}_i$ are linearly independent.
+\end{theorem}
+\begin{corollary}
+\begin{enumerate}[label=(\arabic*)]
+    \item Suppose $V$ is finite dimensional, and $\mathrm{dim}(V)=n$, and $T$ has $n$ distinct eigenvalues in $F$. Then $T$ is diagonalisable
+    \item If $A \in M_n(F), \chi_A(x)$ has n distinct roots in $F$, then $A$ is diagonalisable over $F$.
+\end{enumerate}
+
+\end{corollary}
+\emph{Proof of theorem:} By induction on $n$.\\
+$n=1$: $v_1\neq 0$, as $\v{v}_1$ is an eigenvector.\\
+\emph{Inductive step:} Suppose $n>1$ and the result is true for all $<n$. Suppose for a contradiction that $\v{v}_1,...\v{v}_n$ are linearly dependent, so there exist $\alpha_1,...,\alpha_n \in F$ not all 0, with
+\[\alpha_1\v{v}_1+ \cdots + \alpha_n\v{v}_n=\v{0}\]
+By the induction hypothesis, we have $\alpha_i\neq 0$, otherwise there is a smaller subset of $\v{v}_1,...\v{v}_n$ which is linearly dependent. So, if we divide by $\alpha_1$, we can assume $\alpha_1=1$, so
+\begin{equation}
+    \v{v_1}+\alpha_2\v{v}_2+\cdots+\alpha_n\v{v}_n=\v{0}\label{eq:six-one}
+\end{equation}
+Then applying $T$ to \eqref{eq:six-one}:
+\begin{align*}
+    \v{0}&=T(\v{0})=T(\v{v}_1+\cdots+\alpha_n\v{v}_n)\\
+    &=\lambda_1v_1+\lambda_2\alpha_2\v{v}_2+\cdots+\lambda_n\alpha_n\v{v}_n\\
+\end{align*}
+\begin{example}
+Given $V$ a finite dimensional vector space over $F$ and $T:V \rightarrow V$ a linear map, we check if $T$ is diagonalisable.
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Compute $\chi_T(x)$ and find the eigenvalues $\lambda_1,...\lambda_r \in F$
+    \item for each $ i \leq r$ find a basis $B_i$ for
+    \[E_{\lambda_{i}}=\{\v{v} \in V: T(\v{V})=\lambda_i\v{v}\}\]
+    \item if 
+    \[\sum_{i=1}^r\mathrm{dim}(E_{\lambda_{i}})< \mathrm{dim}(V)\]
+    Then $T$ is not diagonalisable.
+    \item If
+    \[\sum_{i=1}^r\mathrm{dim}(E_{\lambda_i})>\mathrm{dim}(V)\]
+    Then we have equality here and the union of the $B_i$ gives a basis of $V$. Therefore $T$ is diagonalisable.
+    \end{enumerate}
+    \emph{Proof of \textcircled{\tiny{4}}}: Write 
+    \[B_i:v_{i_1},...,v_{i_{n(i)}}\]
+    We need to show that the $v_{ij}$ are linearly independent, then \textcircled{\tiny{4}} follows. Suppose $\alpha_{ij} \in F$ and
+    \[\sum_{i=1}^r\left(\sum_{j=1}^{n(i)}\alpha_{ij}v_{ij}\right)=0\]
+    Then let $w_i=\sum_{j=1}^{n(i)}\alpha_{ij}v_{ij}$. So $w_i \in E_{\lambda_i}$ and
+    \[w_1+\cdots+w_r=0\]
+    As $\lambda_i\neq\lambda_{i'}$ if $i \neq i'$. Then 6.3.5 gives $w_i = 0, \forall i \leq r$. Thus, as $v_{i_1},...,v_{i_{n(i)}}$ are linearly independent, we obtain from the def. of the $w_i$ that 
+    \[\alpha_{ij}=0,\forall i\leq r, \forall 1\leq j\leq n(i)\]
+\end{example}
+\subsection{Orthogonal vectors in $\mathbb{R}^n$}
+\begin{definition}
+If 
+\[\v{u}=\vectiii{\alpha_1}{\vdots}{\alpha_n}, \v{v} = \vectiii{\beta_1}{\vdots}{\beta_n}\]
+The \emph{inner product} of $\v{u}$ and $\v{v}$ is
+\[\v{u}\cdot\v{v}=\sum^n_{i=1}\alpha_i\beta_i\]
+Say that $\v{u}$ and $\v{v}$ are \emph{orthogonal} if their inner product is 0. The \emph{norm} of $\v{u}$ is
+\begin{align*}
+    ||\v{u}|| &= \sqrt{\v{u}\cdots\v{u}}\\
+    &=\left(\sum_{i=1}^n\alpha_i^2\right)^{\frac{1}{2}}\\
+    ||\v{u}-\v{v}||&=\left(\sum_{i=1}^n(\alpha_i-\beta_i)^2\right)^{\frac{1}{2}}\\
+    &= \> \text{distance of $\v{u} from \v{v}$}
+\end{align*}
+Note also that
+\begin{enumerate}[label=(\arabic*)]
+    \item $\v{u}\cdot(\v{v}+\v{w})=\v{u}\cdot \v{v} + \v{u} \cdot \v{w}$
+    \item $||\v{u}||=0 \iff \v{u}=0$
+    \item $||\alpha\v{u}||=|\alpha|||\v{u}||$. So, if $\v{u}\neq 0$ then
+    \[||\frac{\v{u}}{||\v{u}||}||=1\]
+\end{enumerate}
+\end{definition}
+\begin{theorem}
+\begin{enumerate}[label=\arabic*)]
+    \item (Cauchy-Schwarz) If $\v{u},\v{v} \in \mathbb{R}^n$, then 
+    \[||\v{u}||\cdot||\v{v}||\geq |\v{u}\cdot\v{v}|\] There is equality if and only if $\v{u}$ and $\v{v}$ are linearly dependent.
+    \item (Triangle Inequality) 
+    \[||\v{u}+\v{v}|| \leq ||\v{u}|| + ||\v{v}||\]
+    \item (Metric Triangle Inequality)
+    \[||\v{u}-\v{v}||\leq ||\v{u}-\v{w}|| + ||\v{w}-\v{v}||\]
+\end{enumerate}
+\end{theorem}
+\emph{Proof:}
+\begin{enumerate}[label=\arabic*)]
+    \item Wlog assume $\v{u} \neq \v{0}$. Then consider $||\v{\lambda u-v}||^2$. We know that $0\leq ||\v{\lambda u-v}||^2$ and so by expanding this, we get $0\leq \lambda^2||\v{u}||^2+||\v{v}||^2 - 2\lambda(\v{u\cdot v})$. We now want the value of $\lambda$ which minimises the right hand side of this expression, and after some calculus (which we can do because this is a quadratic in $\lambda$), we get $\lambda = \frac{\v{u\cdot v}}{||\v{u}||^2}$, and using this value of $\lambda$, we get the right hand side to be $\frac{(\v{u\cdot v)^2}}{||\v{u}||^2} +||\v{v}||^2 -2\frac{(\v{u\cdot v)^2}}{||\v{u}||^2}$, and after some rearrangement with the previous expression, we come to the statement $||\v{u}||^2 \> ||\v{v}||^2 \geq (\v{u \cdot v})^2$ and from there, the required inequality follows immediately
+    \item We can use $(1)$ to get the expression $||\v{u+v}||^2 \leq (||\v{u}||+||\v{v}||)^2$
+    \item The metric triangle inequality follows directly from $(2)$ by considering $\v{u-v}$ as $(\v{u-w+w-v})$ and then applying $(2)$ 
+\end{enumerate}
+Say vectors $\v{u}_1,...,\v{u}_n \in \mathbb{R}^n$ form an \emph{orthonormal set} if $||\v{u}_i||=1$ and $\v{u}_i\cdot\v{u}_j=0, i\neq j$.
+\begin{definition}
+$P \in M_n(\mathbb{R})$ is an orthogonal matrix if $P^TP=I_n$
+\end{definition}
+\begin{lemma}
+$\v{P} \in M_n(\mathbb{R})$ is an orthogonal matrix iff the columns of $\v{P}$ form an orthonormal set in $\mathbb{R}^n$.
+\end{lemma}
+\emph{Proof:} The $ij$ entry of $\v{P}^T\v{P}$ is the inner product of the columns $i$ and $j$ of $\v{P}$.
+\begin{theorem}
+(Gram-Schmidt) Let $\v{v}_1,...\v{v}_r$ be a set of linearly independent vectors in $\mathbb{R}^n$. Then there exists an orthonormal set $\v{u}_1,...\v{u}_r \in \mathbb{R}^n$ such that for $i \leq r$ \[\mathrm{Span}(\v{v}_1,...\v{v}_i)= \mathrm{Span}(\v{u}_1,...,\v{u}_i)\]
+\end{theorem}
+\begin{corollary}
+\begin{enumerate}[label=\arabic*)]
+    \item If $U$ is a subspace of $\mathbb{R}^n$ there is an orthonormal basis $\v{u}_1,...\v{u}_r$ of $U$.
+    \item If $\v{v} \in \mathbb{R}^n$ and $||\v{v}||=1$ there is an orthogonal matrix $\v{P}$ with first column $\v{v}$.
+\end{enumerate}
+\emph{Proof:} \begin{enumerate}[label=\arabic*)]
+    \item Take $\v{v}_1,...\v{v}_r$ a basis of $U$ and apply Gram-Schmidt
+    \item Extend $\v{v}$ to a basis 
+    \[\v{v}_1=\v{v},...,\v{v}_n\]
+    of $\mathbb{R}^n$. Apply Gram-Schmidt to obtain $\v{u}_1,...,\v{u}_n$ with $\v{u}_1=\v{v}$ and $\v{u}_1,...\v{u}_n$ an orthonormal set. Then take $\v{u}_1,...\v{u}_n$ as the columns of $\v{P}$.
+\end{enumerate}
+\end{corollary}
+\setcounter{subsubsection}{4}
+\subsubsection{Gram-Schmidt}
+\emph{Given} $\v{v}_1,...,\v{v}_r \in \mathbb{R}^n$ linearly independent, we \emph{find} orthogonal vectors $\v{w}_1,...\v{w}_r \in \mathbb{R}^n$ with $\mathrm{Span}(\v{v}_1,...,\v{v}_i) = \mathrm{Span}(\v{w}_1,...\v{w}_i), \forall i \leq r$.\\
+Then, \emph{normalise} the vectors,
+\[\v{u}_i=\frac{\v{w}_i}{||\v{w}_i||}\]
+Then $\v{u}_1,...,\v{u}_r \in \mathbb{R}^n$ are orthonormal and the span is equal to the span of the $\v{v}_i$.\par
+We define the $\v{w}_i$ inductively. 
+\begin{align*}
+    \v{w}_1&=\v{v}_1\\
+    \vdots&\\
+    \v{w}_i&=\v{v}_i-\sum_{j=1}^{i-1}\frac{\v{w}_j\cdot \v{v}_i}{\v{w}_j\cdot\v{w}_j}\v{w}_j
+\end{align*}
+We prove by induction that:
+\begin{enumerate}[label=(\alph*)]
+    \item $\v{w}_i\neq0$
+    \item $\mathrm{Span}(\v{v}_1,...\v{v}_i)=\mathrm{Span}(\v{w}_1,...,\v{w}_i)$
+    \item if $k<i$ then $\v{w}_k\cdot \v{w}_i=0$
+\end{enumerate}
+\emph{Proof:} Inductive step. Assume that a,b and c above are true for smaller $i$.
+\begin{enumerate}[label=(\alph*)]
+    \item If $\v{w}_i=0$ then by the inductive hypothesis
+    \[\v{v}_i \in \mathrm{Span}(\v{w}_1,...\v{w}_{i-1})\overset{\text{\tiny{ind. hyp.}}}{=}\mathrm{Span}(\v{v}_1,...,\v{v}_{i-1})\]
+    which is a contradiction since they are LI.
+    \item Exercise (sorry dudes)
+    \item \[\v{w}_k \cdot \v{w}_i=\v{w}_k\cdot\v{v}_i-\sum_{j=1}^{i-1}\frac{\v{w}_j\cdot \v{v}_i}{\v{w}_j\cdot\v{w}_j}\v{w}_j\]
+    Then $k,j < i$ so by the inductive hypothesis, $\v{w}_k\cdot \v{w}_j=0$ unless $\v{w}_k=0$, so
+    \[\v{w}_k\cdot\v{w}_i=0\]
+    by some nasty fraction i don't wanna type out rn and also cause he moved the paper whoops
+\end{enumerate}
+\emph{Example}: Find an orthogonal matrix $P \in M_3(\mathbb{R})$ with the first column
+\[\frac{1}{\sqrt{3}}\vectiii{1}{1}{1}\]
+Apply Gram-Schmidt to
+\[\v{v}_1=\vectiii{1}{1}{1}, \v{v}_2=\vectiii{0}{1}{0}, \v{v}_3=\vectiii{0}{0}{1}\]
+\emph{Solution}:
+\[\v{w}_1=\v{v}_1=\vectiii{1}{1}{1}\]
+Then we obtain
+\begin{align*}
+    \v{w}_1&=\v{v}_1=\vectiii{1}{1}{1}\\
+    \v{w}_2&=\v{v}_2-\frac{1}{3}\vectiii{1}{1}{1}=\frac{1}{3}\vectiii{-1}{2}{-1}\\
+    \intertext{It's easier to take $\v{w}_2=\vectiii{-1}{2}{-1}$. Then}
+    \v{w}_3&=\vectiii{0}{0}{1}-\frac{1}{3}\vectiii{1}{1}{1}-\frac{-1}{6}\vectiii{-1}{2}{-1}\\
+    &=\frac{1}{2}\vectiii{-1}{0}{1}
+\end{align*}
+Now we normalise the vectors
+\begin{align*}
+    \v{u}_1&=\frac{1}{\sqrt{3}}\vectiii{1}{1}{1}, \v{u}_2=\frac{1}{\sqrt{6}}\vectiii{-1}{2}{-1}\\
+    \v{u}_3&=\frac{1}{\sqrt{2}}\vectiii{-1}{0}{1}\\
+    \v{P}&=\frac{1}{\sqrt{6}}\begin{pmatrix}
+    \sqrt{2}&-1&-\sqrt{3}\\
+    \sqrt{2}&2&0\\
+    \sqrt{2}&-1&\sqrt{3}
+    \end{pmatrix}
+\end{align*}
+
+\subsection{Real symmetric matrices}
+If $\v{A} \in M_n(\mathbb{R})$ then we have $\v{A}^T=\v{A}$. A key property of this is, if $\v{u}, \v{v} \in \mathbb{R}^n$, then
+\begin{align*}
+    (\v{A}\v{u})\cdot \v{v}\\
+    =(\v{u}^T\v{A}^T)\v{v}&=\v{u}^T(\v{A}^T\v{v})\\
+    &=\v{u}^T(\v{Av})\\
+    &=\v{u}\cdot(\v{Av})
+\end{align*}
+So the linear map given by $\v{A}$ is \emph{self-adjoint}.\par
+\emph{Fact:} (Fundamental theorem of Algebra, C.F.Gauss) Suppose $p(x)$ is a non-constant polynomial with coefficients in $\mathbb{C}$, then there is a root $\alpha \in \mathbb{C}$. (i.e., $p(\alpha)=0$ for some $\alpha \in \mathbb{C}$.
+\par
+\emph{Proof:} complex analysis in second year uwu
+\begin{lemma}
+Suppose $A \in M_n(\mathbb{R})$ is symmetric. Suppose $\lambda \in \mathbb{C}$ is a root of $\chi_A(x)$. Then $\lambda \in \mathbb{R}$.
+\end{lemma}
+By 6.5.1 and the FTA, we have
+\begin{corollary}
+If $A \in M_n(\mathbb{R})$ is symmetric, then there is an eigenvalue $\lambda \in \mathbb{R}$ of $A$.
+\end{corollary}
+\emph{Proof of 6.5.1}: Think of $\v{A} \in M_n(\mathbb{C})$. So $\lambda$ is an eigenvalue of $\v{A}$. So there is $0\neq \v{v} \in \mathbb{C}^n$ with
+\[\v{Av}=\lambda\v{v}\]
+So let 
+\[\v{\bar{v}}=\vectiii{\bar{\alpha}_1}{\vdots}{\bar{\alpha}_n}\]
+when
+\[\v{v}=\vectiii{\alpha_1}{\vdots}{\alpha_n}\]
+So 
+\begin{align*}
+    \v{\bar{v}}^T(\v{Av})&= \v{\bar{v}}^T(\lambda\v{v})\\
+    &=\lambda\v{\bar{v}}^T\v{v}\\
+    \intertext{Note that $\v{A}=\v{\bar{A}}=\v{\bar{A}}^T$. So}
+    \v{\bar{v}}^T(\v{Av})&=(\v{\bar{V}}^T\v{\bar{A}}^T)\v{v}\\
+    &=(\bar{\v{v}^T\v{A}^T})\v{v}\\
+    &=(\bar{\v{Av}^T})\v{v}\\
+    &=\bar{(\lambda\v{v})^T}\v{v}=\bar{\lambda}\bar{\v{v}}^T\v{v}\\
+    \v{\bar{v}}^T\v{v}&=\sum_{j=1}^n|\alpha_j|^2 \neq 0
+    \intertext{so}
+    \lambda&=\bar{\lambda}
+\end{align*}
+So $\lambda \in \mathbb{R}$.
+\begin{lemma}
+Suppose $\v{A} \in M_n(\mathbb{R}$ is symmetric and $\lambda, \mu \in \mathbb{R}$ are distinct eigenvalues of $\v{A}$. Suppose $\v{u}, \v{v} \in \mathbb{R}^n$ are eigenvectors with corresponding eigenvalues $\lambda, \mu$. Then $\v{u}\cdot\v{v}=0$.
+\end{lemma}
+\emph{Proof:} As $\v{A}$ is symmetric, \[(\v{Au})\cdot\v{v}=\v{u}\cdot(\v{Av})\]
+Thus $\lambda\v{u}\cdot\v{v}=\mu\v{u}\cdot\v{v}$. As $\lambda \neq \mu$ we get $\v{u}\cdot\v{v}=0$
+\begin{theorem}
+Suppose $\v{A}\in M_n(\mathbb{R})$ is symmetric. Then there exists an orthogonal matrix $\v{P} \in M_n(\mathbb{R})$ with $\v{P}^{-1}\v{AP}$, a diagonal matrix.
+\end{theorem}
+\emph{Proof:} By induction on $n$. $n=1$ is trivial. Then suppose we have the result for $(n-1)\times(n-1)$ real matrices.\\
+By 6.5.2 there is an eigenvalue $\lambda_1 \in \mathbb{R}$ of $\v{A}$, and let $\v{v}_1$ be the corresponding eigenvector with $||\v{v}_1||=1$.\\
+Let $\v{P}_1$ be an orthogonal $n\times n$ matrix with first column $\v{v}_1$. So 
+\[\v{P}_1=\begin{pmatrix}
+\v{v}_1 & \v{v}_2 & \cdots & \v{v}_n
+\end{pmatrix}\]
+Then $\v{P}_1^{-1}=\v{P}_1^T$ and
+\begin{align*}\v{P}_1^T\v{AP}_1&=\vectiii{\v{v}_1^T}{\vdots}{\v{v}_n^T}\begin{pmatrix}
+\v{Av}_1&\cdots&\v{Av}_n\end{pmatrix}
+\intertext{Noting that $\v{Av}_n=\lambda_n\v{v}_n$}
+&=\begin{pmatrix}
+\lambda_1&&*&\\
+0&&&\\
+\vdots&&\v{A}'&\\
+0&&&
+\end{pmatrix}
+\end{align*}
+This matrix is symmetric as
+\begin{align*}(\v{P}_1^T\v{AP}_1)^T&=\v{P}_1^T\v{A}^T\v{P}_1=\v{P}_1^T\v{AP}_1\\
+\intertext{So}
+\v{P}_1^T\v{AP}_1&=\begin{pmatrix}
+\lambda_1&0&\cdots&0\\
+0&&&\\
+\vdots&&\v{A}'&\\
+0&&&
+\end{pmatrix}
+\end{align*}
+And $\v{A}'$ is symmetric. By the inductive hypothesis there is an orthogonal matrix $\v{P}' \in M_{n-1}(\mathbb{R})$ with $(\v{P}')^T\v{A}'\v{P}'$ diagonal. Now, let
+\begin{align*}
+    \v{P}_2&=\begin{pmatrix}
+    1&0&\cdots&0\\
+    0&&&\\
+    \vdots&&\v{P}'&\\
+    0&&&
+    \end{pmatrix}
+    &\in M_n(\mathbb{R}) \> \text{Easily, $\v{P}_2$ is orthogonal, and}\\
+    \v{P}_2^T(\v{P}_1^T\v{AP}_1)\v{P}_2&=\begin{pmatrix}
+    \lambda_1&0&\cdots&0\\
+    0&&&\\
+    \vdots&&\v{P}'^T\v{A}'\v{P}'&\\
+    0&&&
+    \end{pmatrix}\\
+    &=\begin{pmatrix}
+    \lambda_1&\cdots&0\\
+    \vdots&\ddots&\vdots\\
+    0&\cdots&\lambda_n
+    \end{pmatrix}
+\end{align*}
+Let $\v{P}=\v{P}_1\v{P}_2$. Then $\v{P}$ is orthogonal and
+\begin{align}
+    \v{P}^T\v{AP}&=\v{P}_2^T\v{P}_1^T\v{AP}_1\v{P}_2\\
+    &= \mathrm{diag}(\lambda_1,...,\lambda_n)
+\end{align}
+\setcounter{subsubsection}{3}
+\subsubsection{Method for finding $P$}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Compute eigenvalues $\lambda_1,...\lambda_r \in \mathbb{R}$ of $\v{A}$
+    \item For each $i \leq r$ find a basis of
+    \[I_{\lambda_i} = \{\v{v}\in\mathbb{R}^n:\v{Av}=\lambda_i\v{v}\}\]
+    Use Gram-Schmidt to obtain an orthonormal basis of $E_{\lambda_i}$.
+    \item Take all of those bases together: we have a basis for $\mathbb{R}^n$. By 6.5.3 it is an orthonormal basis. Take this as the columns of $\v{P}$.
+\end{enumerate}
+\begin{example}
+Find an orthogonal matrix $\v{P}\in M_3(\mathbb{R})$ such that $\v{P}^T\v{AP}$ is diagonal where
+\[\v{A}=\begin{pmatrix}
+1&-1&-1\\
+-1&1&-1\\
+-1&-1&1
+\end{pmatrix}\]
+\end{example}
+\emph{Solution:} The characteristic polynomial is:
+\begin{align*}
+    \det\begin{pmatrix}
+    x-1&1&1\\
+    1&x-1&1\\
+    1&1&x-1
+    \end{pmatrix}&=(x-1)^3-(x-1)-(x-2)-(x-2)\\
+    &=x^3-3x^2+4=(x+1)(x-2)
+\end{align*}
+So our eigenvalues are 2 and -1. The eigenspace $E_{-1}:$\\
+\begin{tabular}{cc}
+spanned by & $\vectiii{1}{1}{1}$\\
+Normalise:&$\frac{1}{\sqrt{3}}\vectiii{1}{1}{1}$\\
+\end{tabular}\\
+Eigenspace $E_2$:
+\[\begin{pmatrix}
+-1&-1&-1\\
+-1&-1&-1\\
+-1&-1&-1
+\end{pmatrix}\vectiii{x_1}{x_2}{x_3}=\vectiii{0}{0}{0}\]
+We obtain 2 linearly independent solutions
+\[\v{v}_1=\vectiii{1}{-1}{0}, \v{v}_2=\vectiii{0}{1}{-1}\]
+Now we use G-S to get an orthonormal basis.
+\begin{align*}
+    \v{w}_1&=\v{v}_1=\vectiii{1}{-1}{0}\\
+    \v{w}_2=\v{v}_2-\frac{\v{1}_1\cdot\v{v}_2}{\v{w}_1\cdot\v{w}_1}\vectiii{1}{-1}{0}=\vectiii{\frac{1}{2}}{\frac{1}{2}}{-1}\\
+    &=\frac{1}{2}\vectiii{1}{1}{-2}\\
+    \intertext{Now normalise}
+    \v{u}_1&=\frac{1}{\sqrt{2}}\vectiii{1}{-1}{0}\\
+    \v{u}_2&=\frac{1}{\sqrt{2}}\vectiii{1}{1}{-2}\\
+    \intertext{Let}
+    \v{P}&=\frac{1}{\sqrt{6}}\begin{pmatrix}
+    \sqrt{2}&\sqrt{3}&1\\
+    \sqrt{2}&-\sqrt{3}&1\\
+    \sqrt{2}&0&-2
+    \end{pmatrix}\\
+    \intertext{Then}
+    \v{P}^T\v{AP}&=\begin{pmatrix}
+    -1&0&0\\
+    0&2&0\\
+    0&0&2
+    \end{pmatrix}
+\end{align*}
+\begin{remark}
+If $\v{PP}^T=\v{I}$ then $\det(\v{P})=\pm1$
+\end{remark}
+\chapter{Groups}
+\section{Groups + Subgroups}
+\subsection{Binary operations; groups; basic facts}
+\begin{definition}
+Suppose $S$ a set. A \emph{binary operation} on $S$ assigns to each ordered pair $(a,b)$ of $S$ an element $(a*b)$ pf $S$\par
+Formally, $*$ is a function
+\[S \times S \rightarrow S\]
+\end{definition}
+\emph{Examples}
+Let $S=M_2(\mathbb{R})$:
+\begin{enumerate}[label=\arabic*)]
+    \item $a*b$, $*$ is matrix multiplication
+    \item $*$ matrix addition
+    \item $a*b=a$
+    \item $a*b=ab-ba$
+    \item Let $S_1 \subset S$
+    \[S_1=\{a \in M_2(\mathbb{R}):a \> \text{invertible}\]
+    Let $a*b$ = matrix multiplication - binary operation on $S_1$ as $a*b \in S_1$
+\end{enumerate}
+\begin{definition}
+A binary operation $*$ on $S$ is associative if
+\[\forall a,b,c \in S, (a*b)*c=a*(b*c)\]
+\end{definition}
+Associativity means that we can unambiguously write an expression such as
+\[((a_1*a_2)*(a_3*a_4))*a_5\]
+as
+\[a_1*a_2*a_3*a_4*a_5\]
+\begin{definition}
+A \emph{group} $(G,*)$ consists of a set $G$ with a binary operation $*$ on $G$ satisfying:
+\begin{axioms}{G}
+    \item (Associativity)
+    \[\forall g,h,k\in G, g*(h*k)=(g*h)*k\]
+    \item (Identity axiom)
+    \[\exists e \in G \> \text{such that} \> \forall g \in G, e*g=g*e=g\]
+    There is a unique such $e$, which we will prove and call the identity element of the group.
+    \item (Existence of inverses) With $e$ as in G2:
+    \[\forall g \in G, \exists h \in G \> \text{such that} \> g*h=h*g=e\]
+    We will show that $h$ here is uniquely determined by $g$: call $h$ the \emph{inverse} of $g$, denoted $g^{-1}$.
+\end{axioms}
+\end{definition}
+\setcounter{subsubsection}{3}
+\subsubsection{Notation and Terminology}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item More common to use $\cdot$ instead of $*$ for the group operation, i.e. write $g\cdot h$. Often we omit it and just write $gh$. Call the operation the product.
+    \item A group $(G,*)$ is \emph{abelian} or \emph{commutative} if
+    \[\forall g,h \in G, g*h=h*g\]
+    In such cases we sometimes write the operation as $+$; the identity 0 and inverse if $a$ as $-a$.
+\end{enumerate}
+\subsubsection{Justification of 1.3}
+Suppose $(G,*)$ is a group.
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item If $e,e' \in G$ and
+    \begin{center}
+        \[\begin{array}{cc}
+        \forall g \in G& e\cdot g = g\cdot e = g\\
+        \text{and}& e'\cdot g = g\cdot e' = g
+        \end{array}
+        \]
+    \end{center}
+    then $e=e'$\par
+    \emph{Proof:} $e=e\cdot e'=e'$ by the above equations.
+    \item If $g,g;,g;; \in G$ and 
+    \begin{align*}
+        gg'&\overset{\textcircled{\tiny{1}}}{=}e\overset{\textcircled{\tiny{2}}}{=}g'g\\
+        \text{and} \> gg''\overset{\textcircled{\tiny{3}}}{=}e\overset{\textcircled{tiny{4}}}{=}g''g
+    \end{align*}
+    then $g'=g''$.\par
+    \emph{Proof:} \begin{align*}
+        (g'g)g''&\overset{\textcircled{\tiny{2}}}{=}eg''=g''\\
+        g'(gg'')\overset{\textcircled{\tiny{3}}}{=}g'e=g'
+    \end{align*}
+    So by associativity, $g'=g''$
+\end{enumerate}
+\begin{lemma}
+\emph{(Equations in Groups)} Suppose $(G,*)$ is a group and $g,h \in G$
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item for $x \in G, gx=h \iff x=g^{-1}h$
+    \item for $y \in G, yg=h\iff y=hg^{-1}$
+\end{enumerate}
+\end{lemma}
+\emph{Proof:}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item $\implies$: \begin{align*}
+        gx=h &\implies g^{-1}(gx)=g^{-1}h\\
+        &\implies (g^{-1}g)x=g^{-1}h\\
+        &\implies ex=g^{-1}h \implies x=g^{-1}h
+    \end{align*}
+    $\impliedby$: same in reverse lol
+    \item Similar, but multiply on the right by $g^{-1}$
+\end{enumerate}
+\begin{lemma}
+\emph{(Inverse of a product)} Suppose $(G,\cdot)$ is a group. Then
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item If $g,h \in G$ then:
+    \[(gh)^{-1}=h^{-1}g^{-1}\]
+    \item if $g_1, ..., g_n \in G$ then
+    \[(g_1 \cdots g_n)^{-1}=g_n^{-1}\cdots g_1^{-1}\]
+\end{enumerate}
+\end{lemma}
+\emph{Proof:} TRIVIAL AND LEFT TO THE READER B\^)
+\begin{example}
+(From Fields)
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item $\mathbb{R}$ with the operation + on a group. The identity element is 0 and inverse of $a \in \mathbb{R}$ is $-a$.
+    \item $\mathbb{R}^x = \mathbb{R} \backslash \{0\}$ with the operation $\cdot$ is a group
+    \item \textcircled{\tiny{1}} and \textcircled{\tiny{2}} work in any field
+    \item if $F$ is a field ad $n \in \mathbb{N}$ then $(F^n, +)$ is a group
+    \item if $V$ is a vector space over $F$ then $(V,+)$ is a group.
+    \item Let $n \in \mathbb{N}$ and $F$ a field. The general linear group
+    \[\text{GL}(n,F)\]
+    is the set $G$ of $n \times n$ invertible matrices and operation matrix multiplication. This is a group:
+    \begin{itemize}
+        \item Binary operation: if $A,B \in G$, check $AB \in G$. (Because the inverse of $AB$ is $B^{-1}A^{-1}$)
+        \item Associativity (G1): property of matrix multiplication as defined.
+        \item Existence of Identity (G2): The identity matrix $\v{I}_n$ which is also invertible.
+        \item Existence of Inverses (G3): By definition of $G$.
+    \end{itemize}
+\end{enumerate}
+\end{example}
+
+\subsection{The Symmetric Groups}
+\begin{definition}
+Suppose $X$ is any non-zero set. A \emph{Permutation} of $X$ is a bijection $\alpha: X \rightarrow X$.
+\end{definition}
+\emph{E.g.} if $X=\{1,2,3,4\}$,
+\[\alpha=\begin{pmatrix}
+1&2&3&4\\
+2&4&1&3
+\end{pmatrix}\]
+More general notation: if $X=\{1,2,...,n\}$ denote a bijection $\alpha: X \rightarrow X$ by
+\[\alpha=\begin{pmatrix}
+1&2&\cdots&n\\
+\alpha(1)&\alpha(2)&\cdots&\alpha(n)
+\end{pmatrix}\]
+\begin{example}
+If $\alpha, \beta: X \rightarrow X$ are permutations, so are their compositions:
+\[
+    (\alpha \circ \beta)(x)=\alpha(\beta(x))
+\]
+\end{example}
+Some more examples can be found in the other notes or if anyone wants to copy them hahaha
+Let $\mathrm{Sym}(X)$ denote the set of all permutations of $X$.
+\begin{theorem}
+$\mathrm{Sym}(X)$ is a group, called the symmetric group on $X$ if $X=\{1,...,n\}$, otherwise denoted as $\mathrm{Sym}(n)$ or $S_n$.
+\end{theorem}
+\emph{Proof:} We have a binary operation by the examples. Check the axioms:
+\begin{axioms}{G}
+    \item (Associativity) Composition of functions is associative. If $\alpha,\beta,\gamma \in \mathrm{Sym}(X)$ then $\alpha \circ (\beta \circ \gamma)$ and $(\alpha \circ \beta) \circ \gamma$ are the same.
+    \item (Identity element) the identity function
+    \begin{gather*}
+        1:X \rightarrow X\\
+        1(x)=x
+    \end{gather*}
+    \item (Existence of Inverses) If $\alpha \in \mathrm{Sym}(X)$ it is a bijection, so has an inverse by the introduction module.
+\end{axioms}
+We often write $\alpha\beta$ instead of $\alpha \circ \beta$.
+\begin{example}
+Consider the following elements of $S_6$
+\begin{align*}
+    \alpha&=\begin{pmatrix}
+    1&2&3&4&5&6\\
+    2&3&4&5&6&1
+    \end{pmatrix}\\
+    \beta &= \begin{pmatrix}
+    1&2&3&4&5&6\\
+    1&6&5&4&3&2
+    \end{pmatrix}
+    \intertext{Compute}
+    \alpha\beta &= \begin{pmatrix}
+    1&2&3&4&5&6\\
+    2&1&6&5&4&3
+    \end{pmatrix}
+    \beta\alpha&=\begin{pmatrix}
+    1&2&3&4&5&6\\
+    6&5&4&3&2&1
+    \end{pmatrix}
+    \alpha^{-1}&=\begin{pmatrix}
+    1&2&3&4&5&6\\
+    6&1&2&3&4&5
+    \end{pmatrix}
+    \beta^{-1} &= \begin{pmatrix}
+    1&2&3&4&5&6\\
+    1&6&5&4&3&2
+    \end{pmatrix}
+    \alpha\beta\alpha^{-1}&=\begin{pmatrix}
+    1&2&3&4&5&6\\
+    3&2&1&6&5&4
+    \end{pmatrix}
+\end{align*}
+\end{example}
+\begin{definition}
+Say that a group $(G,\cdot)$ is a finite group if the set $G$ is a finite set. In this case the \emph{order} of this group is $|G|$.
+\end{definition}
+\begin{lemma}
+If $n \in \mathbb{N}$, then $|S_n|=n!$
+\end{lemma}
+\emph{Proof:} We have to count the permutations.
+\[\alpha=\begin{pmatrix}
+1&2&\cdots&n\\
+a_1&a_2&\cdots&a_n
+\end{pmatrix}\]
+$a_1,...a_n$ are $1,...,n$ in some order. There are $n$ choices for $a_1$, $n-1$ choices for $a_2$, and so on.. so there are $n!$ total possibilities for $\alpha$.
+
+\subsection{Powers and subgroups}
+\begin{definition}
+Suppose $(G,\cdot)$ is a group. For $g \in G$, we let
+\[g^0=e, g^1=g, g^2=g \cdot g,...\]
+More precisely, for $n \in \mathbb{N}$, we define it inductively:
+\[g^0=e, g^1=g, g^{n+1}=g^n\cdot g\]
+We also define $g^{-n}=(g^{-1})^n$.
+\end{definition}
+\begin{lemma}
+With the notation if $m, n \in \mathbb{Z}$, then
+\begin{enumerate}[label=(\roman*)]
+    \item $g^{m+n}=g^m\cdot g^n$
+    \item $(g^m)^{-1}=g^{-m}$
+    \item $g^{mn}=(g^m)^n$
+\end{enumerate}
+\end{lemma}
+\emph{E.g.} 
+\begin{align*}
+    g&=\begin{pmatrix}
+    1&2&3&4\\
+    2&3&4&1
+    \end{pmatrix} \in S_4\\
+    g^2&=\begin{pmatrix}
+    1&2&3&4\\
+    3&4&1&2
+    \end{pmatrix}\\
+    g^3&= \begin{pmatrix}
+    1&2&3&4\\
+    4&1&2&3
+    \end{pmatrix}
+\end{align*}
+So, if $g^4=1, g^5=g,...,g^{19}=g^3$ since $19 \equiv 3 \mod 4$, and equivalently if $n \equiv k \mod 4$ then $g^n=g^k$.
+\par
+\emph{Proof:} (of lemma 1.3.2)
+\begin{enumerate}[label=(\roman*)]
+    \item Proof is by induction on $n$. Our base case $n=0$:
+    \begin{align*}
+        g^{m+0}&=g^m\\
+        g^mg^0&=g^me=g^m & \text{as required}
+    \end{align*}
+    Inductive step: suppose we know $g^{m+n}=g^mg^n$, then
+    \begin{align*}
+        g^{m+(n+1)}&=g^{(m+n)+1}
+        &\overset{\text{def}}{=} g^{m+n}g\\
+        &=(g^mg^n)g=g^m(g^ng)\\
+        &\overset{\text{def}}{=}g^mg^{n+1}&\text{as required}
+    \end{align*}
+    We still need to prove the negative case, however.
+    \item By (i)
+    \item Similar, using (i)
+\end{enumerate}
+\begin{remark}
+(on additive addition): If our group is $(G,+)$ write $g+g+\cdots+g$ as $ng$, not $g^n$.
+\end{remark}
+\begin{definition}
+Suppose $(G,\cdot)$ a group and $H \subset G$. Say that $H$ is a \emph{subgroup} of $(G,\cdot)$ if $H$ with the binary operation it inherits from $G$ is a group, i.e. 
+\[\forall h_1, h_2 \in H, h_1 \cdot h_2 \in H\]
+and $(H,\cdot)$ satisfies axioms G1, G2, G3.
+\end{definition}
+\begin{example}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item $G$ is a subgroup of $G$
+    \item $\{e\}$ is a subgroup of $G$.
+\end{enumerate}
+\end{example}
+\begin{theorem}
+(Test for a subgroup.) Suppose $(G,\cdot)$ is a group and $H \subset G$. Then $H$ is a subgroup if and only if
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item $H \neq \emptyset$
+    \item $\forall h_1,h_2 \in H, h_1 \cdot h_2 \in H$ (Closed under $\cdot$)
+    \item $\forall h \in H, h^{-1} \in H$
+\end{enumerate}
+\end{theorem}
+\emph{Example}
+If $g \in G$, let $H=\{g^m:m \in \mathbb{Z}\}$. This is a subgroup of $G$ by the previous theorem and lemma 1.3.2.
+\emph{Proof of 1.3.3}
+$\impliedby:$ Suppose \textcircled{\tiny{1}} \textcircled{\tiny{2}} \textcircled{\tiny{3}} hold. By \textcircled{\tiny{2}}, we have a binary operation on $H$ given by $\cdot$. So we check if $(H,\cdot)$ satisfies G1,G2 and G3.
+\begin{axioms}{G}
+    \item Follows from associativity in $G$.
+    \item Enough to show that $e_G \in H$. By \textcircled{\tiny{1}} there is some $h \in H$. By \textcircled{\tiny{3}}, $h^{-1} \in H$. So then we have $e_G=h^{-1}h\in H$.
+    \item Follows from \textcircled{\tiny{3}}
+\end{axioms}
+$\implies$: if $H$ is a subgroup of $G$, then \textcircled{\tiny{2}} holds by definition. By G2, $H \neq \emptyset$ so \textcircled{\tiny{1}} holds. For \textcircled{\tiny{3}}, first show $e_G \in H$. Let $h \in H$. As $H$ is a subgroup, there is some $x \in H$ with $hx = h$. But the only solution to this equation in $G$ is $x=e$, so $x=e \in H$. Similarly, the only solution to $hh'=e$ in $G$ is $h'=h^{-1}$. So as $H$ is a group, $h^{-1} \in H$.
+\begin{remark}
+$\implies$ shows that if $H$ is a subgroup of $G$, then $e_G$ is in $H$ and inverses are the same in $H$ as they are in $G$.
+\end{remark}
+\begin{definition}
+\begin{enumerate}[label=\roman*)]
+    \item Suppose $(G, \cdot)$ a group[ and $g \in G$. The \emph{cyclic subgroup} generated by $G$ is $<g>=\{g^m:m \in \mathbb{Z}\}$.
+    \item $G$ is \emph{cyclic} if there is some $g \in G$ with $<g>=G$. $g$ is a \emph{generator} of $G$.
+\end{enumerate}
+\end{definition}
+\begin{example}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Let $G=GL(n, \mathbb{R})$. ($n \times n$ invertible matrices). Here are some subgroups:
+    \begin{enumerate}[label=\arabic*)]
+        \item Let $H=\{g \in G: \det(g)=1\}$. Check:
+        \begin{itemize}
+            \item $H \neq \emptyset$ as $I_n \in H$.
+            \item $H$ closed under $\cdot$:
+            \[\det(g_1,g_2)=\det(g_1)\det(g_2)\]
+            so if $g_1, g_2 \in H$, then $g_1g_2 \in H$
+            \item $H$ closed under inverses:
+            \[\det(g^{-1})=\frac{1}{\det(g)}\]
+            So if $h \in H$ then $h^{-1} \in H$.
+        \end{itemize}
+        \item Let $H=\{g \in G: g^Tg=I_n\}$: exercise time fellas
+    \end{enumerate}
+    \item $K=\left\{\begin{pmatrix}
+    \cos\theta&-\sin\theta\\
+    \sin\theta&\cos\theta
+    \end{pmatrix}: \theta \in \mathbb{R}\right\} \leq GL(2, \mathbb{R})$, or the group of rotations about $O$. This group is not cyclic, but it is abelian. It's also uncountable.
+    \item We also have
+    \[\mathbb{Z} \leq \mathbb{Q} \leq \mathbb{R} \leq (\mathbb{C}, +)\]
+    We have $\mathbb{Z} = <1>$ and therefore is cyclic.
+    \item $U=\{e^{i\theta}: \theta \in \mathbb{R}\} \leq (\mathbb{C}^x, \cdot)\}$
+    $U$ can also be written as $\{z \in \mathbb{C}: |z|=1\}$. Since $z\bar{z}=1$, we have $z^{-1}=\bar{z}$. Group isn't cyclic, but it is abelian.
+    \item Let $n \in \mathbb{N}$ and $\zeta=e^{2\pi i/n}$:
+    \[<\zeta>=\{1, \zeta, \zeta^2, ..., \zeta^{n-1}\} \leq U (\leq \mathbb{C}\]
+    \par
+    The entries of $<\zeta>$ form the vertices of a regular $n$-gon around the unit circle, like roots of unity. For every $n \in \mathbb{N}$, there is a cyclic group of order $n!$.
+    \item Let $F$ be a field and consider $(F^n, +)$. Any subspace of this is also a subgroup. But the converse is not necessarily true, e.g.:
+    \[(\mathbb{Q}^2, +) \leq (\mathbb{R}^2, +)\]
+    But The former isn't a subspace because it's not closed under scalar multiplication.
+    \item Let
+    \begin{align*}
+        \alpha&=\begin{pmatrix}
+        1&2&3&4\\
+        2&1&4&3
+        \end{pmatrix}\\
+        \beta &= \begin{pmatrix}
+        1&2&3&4\\
+        3&4&1&2
+        \end{pmatrix}\\
+        \gamma &= \begin{pmatrix}
+        1&2&3&4\\
+        4&3&2&1
+        \end{pmatrix}\\
+        V&=\{1, \alpha, \beta, \gamma\} \leq S_4.
+    \end{align*}
+    This group isn't cyclic, but it is abelian.
+\end{enumerate}
+\end{example}
+\emph{Notation:} We often write '$G$ is a group' rather than '$(G,\cdot)$ is a group' and assume the multiplication operation. If $H \subset G$ and $H $ is a subgroup, we indicate this by $H \leq G$.
+\subsection{Orders of Elements}
+\begin{definition}
+Suppose $G$ a group and $g \in G$. Say that $g$ has \emph{finite order} if there is no $n \in \mathbb{N}$ such that
+\[g^n=e \> (\mathbb{N} = \{1,2,...\}\])
+In this case the smallest $n \in \mathbb{N}$ with $g^n=e$ is called the \emph{order} of $g$. (Denoted by $\mathrm{ord}(g)$). If there is no such $n$, we say $g$ has infinite order.
+\end{definition}
+\emph{Examples:}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item $e \in G$ has order 1
+    \item \[g = \begin{pmatrix}
+    1&2&3\\
+    2&3&1
+    \end{pmatrix} \in S_3\]
+    has order 3
+    \[g = \begin{pmatrix}
+    1&2&3\\
+    1&3&2
+    \end{pmatrix} \in S_3\]
+    has order 2.
+    \item $2 \in (\mathbb{R}^x, \cdot)$ has infinite order. $-1$ has order 2
+    \item $\zeta = e^{\frac{2\pi i}{n}} \in (\mathbb{C}^x, \cdot)$ has order $n$
+    \item
+    \[g=\begin{pmatrix}
+    0&0&1\\
+    1&0&0\\
+    0&1&0
+    \end{pmatrix} \in GL_3(\mathbb{R})\]
+    has order 3.
+\end{enumerate}
+\begin{theorem}
+Suppose $G$ is a finite group.
+\begin{enumerate}[label=\arabic*)]
+    \item Every $g \in G$ has finite order
+    \item If $H \subset G$ and
+    \begin{enumerate}[label=\roman*)]
+        \item $H \neq \emptyset$
+        \item if $h_1, h_2 \in H$ then $h_1h_2 \in H$
+    \end{enumerate}
+    then $H$ is a subgroup of $G$.
+\end{enumerate}
+\end{theorem}
+\emph{Proof:} \begin{enumerate}[label=\arabic*)]
+    \item Consider
+    \[g,g^2,... \in G\]
+    As $|G|$ is finite there are $0<m<n$ with
+    \[g^m=g^n \implies g^{n-m}=e\]
+    So $g$ has finite order.
+    \item We have to show $H$ is closed under inverses. Let $h \in H$. By part 1) there is $n \in \mathbb{N}$ such that $h^n=e$. We want to show that $h^{-1} \in H$. Can assume $h \neq e$, so $n>1$. Then
+    \[h^{-1}=h^{n-1}\]
+    and by ii) $h^{n-1} \in H$ (as $h \in H$.
+\end{enumerate}
+Some things to come later:
+\begin{enumerate}[label=\textcircled{\tiny{\Alph*}}]
+    \item If $G$ is a finite group and $g \in G$, then $\mathrm{ord}(g)$ divides $|G|$
+    \item This gives a nice way of computing orders of elements in $S_n$
+\end{enumerate}
+\subsection{More on cyclic groups}
+\begin{theorem}
+Suppose $(G, \cdot)$ a cyclic group, and $G=<g>$.
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item If $H \leq G$ then $H$ is cyclic.
+    \item Suppose $|G|=n$ (i.e. $g$ has order $n$), and $m \in \mathbb{Z}$. Let $d=\gcd(m,n)$ then 
+    \[<g^m>=<g^d>\]
+    and
+    \[|<g^d>|=\frac{n}{d}\]
+    (So $<g^m>=G \iff d=1 \iff \gcd(m,n)=1 \iff m,n$ co-prime)
+    \item if $|G|=n$ and $k \leq n$, then $G$ has a subgroup of order $k$ iff $k|n$. In this case, the subgroup is $<g^\frac{n}{k}$
+\end{enumerate}
+\end{theorem}
+\emph{Example:}
+\[g=e^{\frac{2\pi i}{6}} \in (\mathbb{C}^x, \cdot)\]
+has order 6. The subgroups of $G=<g>$ are of orders 1,2,3,6:
+\begin{align*}
+    \{1\}&\\
+    <g^3>&=\{1,-1\}\\
+    <g^2>&=\{1,e^{\frac{2 \pi i}{3}}, e^{\frac{4 \pi i}{3}}\}\\
+    <g> &\> \text{- order 6}
+\end{align*}
+\emph{Proof:}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item May assume $H \neq \{e\}$. Let $d$ be the least element of
+    \[\{n \in \mathbb{N}:g^n\in H\}\]
+    \emph{Claim:} $H=<g^d>$. As $g^d \in H$ and $H \leq G$, we have $<g^d> \subset H$. Let $h \in H$. So $h=g^m$ for some $m \in \mathbb{Z}$.\par
+    Write $m=qd+r$ where $q, r \in \mathbb{Z}$ and $0 \leq r <d$, then
+    \begin{align*}
+        h&=g^m=g^{qd+r}\\
+        &=(g^D)^qg^r\\
+        \therefore g^r&=h(g^d)^{-q} \in H
+    \end{align*}
+    As $h \in H$ and $g^d \in H$, we have by minimality of $d$ that $r=0$. So
+    \begin{align*}
+        h&= g^{qd}\\
+        &=(g^d)^q\\
+        \text{i.e.} \> h &\in <g^d>
+    \end{align*}
+    \item As $d = \gcd(m,n)$ there are $k, l \in \mathbb{Z}$ with 
+    \[d=km+ln\]
+    To show $<g^m>=<g^D>$ it is enough to prove $g^m \in <g^d>$ and $g^d\in <g^m>$. Now, as $d|m, g^m$ is a power of $g^d$, so the first is true. For the second,
+    \begin{align*}
+        g^d&=g^{km+ln}\\
+        &=(g^m)^k(g^n)^l\\
+        &=g^m)^k &\text{as n =$\mathrm{ord}(g)$}\\
+        \in <g^m>
+    \end{align*}
+    As $d|n$ we can write $n=df, f \in \mathbb{N}$. Then $<g^d>=\{g^0,g^d,..,g^{(f-1)d}$\}\par
+    $g^0,g^d,...,g^{(f-1)d}$ are distinct as $d,...,(f-1)d$ are $<n$.
+    \[\therefore |<g^d>|=f=\frac{n}{d}\]
+    \item By \textcircled{\tiny{1}} and \textcircled{\tiny{2}}, the unique subgroup with $\frac{n}{d}$ elements is $<g^d>$.
+\end{enumerate}
+
+\emph{Application:} For $n \in \mathbb{N}$, the \emph{Euler totient function} is
+\begin{align*}
+    \phi&: \mathbb{N} \rightarrow \mathbb{N}\\
+    \phi(n) &\mapsto |\{k \in \mathbb{N}: 1 \leq k \leq n \land \gcd(k,n)=1\}| 
+\end{align*}
+\begin{theorem}
+\[\sum_{1\leq d \leq n, d|n}\phi(d)=n\]
+\end{theorem}
+\emph{Proof:} let $G$ be a cyclic group of order $n$. By 1.5.1, if $d|n$ then $G$ has a unique subgroup $G_d$ which contains every element of $G$ of order $d$. This is cyclic by \textcircled{\tiny{1}}, and by \textcircled{\tiny{2}} $G_d$ has $\phi(d)$ elements of order $d$. Thus $G$ has $\phi(d)$ elements of order $G$. Then any element of $G$ has order dividing $n=|G|$, so
+\[\sum_{d|n}\phi(d)=n\]
+By counting elements of $G$ according to their possible orders.
+\begin{definition}
+Suppose $(G, \cdot)$ a group and $S \subset G (S \neq \emptyset)$. Let $S^{-1}:=\{g^{-1}: g \in S\}$ and
+\[<S>=\{g_1,g_2,...,g_k: k \in \mathbb{N} \land g_1,...,g_k \in S\cup S^{-1}\}\]
+Or, the set of all possible products of elements of $S$ and their inverses. This allows repetitions.
+\end{definition}
+\begin{lemma}
+With this notation:
+\begin{enumerate}[label=\arabic*)]
+    \item $<S>$ is a subgroup of $G$
+    \item if $H \leq G$ and $S \subset H$ then $H \geq <S>$
+\end{enumerate}
+\end{lemma}
+So $<S>$ is the smallest subgroup of $G$ containing $S$. It is called the subgroup \emph{generated} by $S$.\par
+If $S=\{x_1,...,x_r\}$ write $<S>$ as $<x_1,...,x_r>$. If $G$ is abelian, then
+\[<x_1,...,x_r> = \{x_1^{k_1}, x_2^{k_2},..., x_r^{k_r}: k_1,...,k_r \in \mathbb{Z}\}\]
+\section{Lagrange's Theorem + Cosets}
+\begin{theorem}
+\emph{(Lagrange)}: Suppose $(G,\cdot)$ a finite group and $H \leq G$. The $|H|$ divides $|G|$.
+\end{theorem}
+\emph{Example}: $S_5$ has order $5!=120$ has no subgroup of order $50$.
+\begin{theorem}
+Suppose $G$ is a finite group and $|G|=n$. Let $g \in G$, then
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item The order of $g$ divides $n$,
+    \item $g^n=e$
+\end{enumerate}
+\end{theorem}
+\emph{Proof:} \begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item The order of $g$ is $|<g>|$. $<g>$ is a subgroup of $G$ and so this follows from Lagrange's theorem.
+    \item Suppose $\mathrm{ord}(g)=k$. By \textcircled{\tiny{1}}, $k|n$. Then
+    \[g^n=(g^k)^{\frac{n}{k}}=e^{\frac{n}{k}}=e\]
+\end{enumerate}
+\begin{corollary}
+(Fermat's Little Theorem): Suppose $p$ is any prime number. If $x \in \mathbb{Z}$ and $p \nmid x$ then $x^{p-1} \cong 1 \mod p$.
+\end{corollary}
+\emph{Proof:} Let $\mathbb{F}_p$ be the field with $p$ elements. Consider $(\mathbb{F}_p^x,\cdot)$ the multiplicative group of non-zero elements
+\[|\mathbb{F}_p^x|=p-1\]
+So for every $g \in \mathbb{F}_p^x$,
+\[g^{p-1}=[1]_p\]
+The residue class of $1 \mod p$. Then if $n \in \mathbb{Z}$ and $p \nmid x$ then $[x]_p \neq [0]_p$. So take $g=[x]_p$, we obtain
+\[[x]_p^{p-1}=[x^{p-1}]_p=[1]_p\]
+i.e. $x^{p-1} \equiv 1 \mod p$
+\begin{example}
+$G=S_3$. Let
+\begin{align*}
+    \alpha &= \begin{pmatrix}
+    1&2&3\\
+    2&3&1
+    \end{pmatrix}\\
+    \beta &= \begin{pmatrix}
+    1&2&3\\
+    2&1&3
+    \end{pmatrix}
+\end{align*}
+Then $<\alpha,\beta>=G$. We have $\mathrm{ord}(\alpha)=3, \mathrm{ord}(\beta)=2$. Then $<\alpha, \beta>$ has subgroups:
+\[\begin{array}{cc}
+    <\alpha> & \text{of order 3}  \\
+    <\beta> & \text{of order 2}
+\end{array}\]
+Then by Lagrange's theorem we have $2| |<\alpha,\beta>|$ and $3| |<\alpha,\beta>|$ so $6||<\alpha,\beta>|$. And as $|G|=6$, we have $<\alpha,\beta>=G$
+\end{example}
+\begin{theorem}
+Suppose $p$ is a prime and $(G, \cdot)$ is a group of order $p$. Then $G$ is cyclic. In fact, if $g \in G, g \neq e$, then $<g>=G$.
+\end{theorem}
+\emph{Proof:} Let $g \in G, g \neq e$. Then $|<g>|$ divides $p=|G|$ (Lagrange). And, $|<g>| \geq 2$ (as $e,g \in <g>$) So $|<g>|=p$.
+\subsection{Cosets}
+\begin{definition}
+Suppose $(G,\cdot)$ a group and $H \leq G$. Let $g \in G$. The subset
+\[g^H:=\{gh:h \in H\} \subset G\]
+Is called a \emph{left coset} of $H$ in $G$. (Sometimes called \emph{H-coset}
+\end{definition}
+If $H=\{h_1,...,h_r\}$ then $g^H:=\{gh_1,...,gh_r\}$.\par
+In past papers, questions worked with right cosets:
+\[Hg:=\{hg:h \in H\}\]
+But we'll stick with left cosets for now.
+\begin{example}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item \begin{align*}
+        G&=(\mathbb{C}^x, \cdot)\\
+        H&=\{z \in \mathbb{C}^x: |z|=1\}\\
+        \intertext{let $g=2$}
+        2H&=\{2e^{i\theta}:\theta \in \mathbb{R}\}
+        &=\{z \in \mathbb{C}^x:|z|=2\}
+    \end{align*}
+    Generally, if $w \in \mathbb{C}^x$, then $wH=\{z \in \mathbb{C}^x:|z| = |w|\}$
+    \item Let $G=(\mathbb{Z}, +), H=\{5m: m \in \mathbb{Z}\}$. Write the cosets additively:
+    \begin{align*}
+        0+H&=H\\
+        1+h&=\{1+5m:m \in \mathbb{Z}\}\\
+        &= \{k \in \mathbb{Z}:k \equiv 1 \mod 5\}
+        &=[1]_5\\
+        \vdots&\\
+        4+H&=[4]_5\\
+        \vdots&\\
+        6+H&=\{6+5m:m \in \mathbb{Z}\}\\
+        &=\{1+5m:m \in \mathbb{Z}\}\\
+        &=[1]_5
+    \end{align*}
+    So there are exactly 5 left cosets: $0+H, 1+H, 2+H,..., 4+H$
+    \item Let
+    \begin{align*}
+        \v{A} &\in M_{m \times n}(\mathbb{R})\\
+        W &= \{\v{x} \in \mathbb{R}^n: \v{Ax}=0_m\} \leq \mathbb{R}^n\\
+        \intertext{Suppose $\v{b} \in \mathbb{R}^m$ and there is $\v{c} \in \mathbb{R}^n$ with $\v{Ac}=\v{b}$}
+        \v{Ax}=\v{b} &\iff \v{A}(\v{x}-\v{c})=0\\
+        &\iff \v{x}-\v{c} \in W\\
+        &\iff \v{x} \in \v{c}+W
+    \end{align*}
+    So the solutions to $\v{Ax}+\v{b}$ are a coset of $W$ in $\mathbb{R}^n$
+\end{enumerate}
+\end{example}
+\begin{lemma}
+Suppose $(G,\cdot)$ a group and $H \leq G$.
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item If $_1, g_2 \in G$ and $g_2 \in g_1H$ then $g_2H=g_1H$.
+    \item If $g, h \in G$ and $gH \cap kH \neq \emptyset$ then $gH=kH$
+\end{enumerate}
+\end{lemma}
+\emph{Proof:}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item First, prove that if $g_2 \in g_1H$ then $g_2H \subseteq g_1H$. As $g_2 \in g_1H$ there is $h \in H$ with $g_2=g_1H$. Any element of $g_2H$ is of the form $g_2h'$ for some $h' \in H$. Then
+    \[g_2h'=(g_1h)h'=g_1(hh')\]
+    as $H \leq G, hh' \in H$ So $g_2h' \in g1'H \therefore g_2H \subseteq g_1H$ \par
+    Also, $g_1=g_2h^{-1}$ as $h^{-1} \in H$. The same argument gives
+    \[g_1H \subseteq g_2H\]
+    \item let $x \in gH \cap kH$. By \textcircled{\tiny{1}} twice:
+    \[gH=xH=kH\]
+\end{enumerate}
+\begin{lemma}
+Suppose $(G, \cdot)$ a group and $H \leq G$. If $g \in G$, the map
+\[H \rightarrow gH\]
+given by
+\[h \mapsto gh\]
+is a bijection. So if $H$ is finite, then $|H|=|gH|$.
+\end{lemma}
+\emph{Proof:} EASY!!! By definition, the map is surjective. If $gh_1=gh_2$ then multiplying by $g^{-1}$ gives us $h_1=h_2$. So map is also injective.\par
+\emph{Proof of Lagrange's theorem}: We have $(g, \cdot)$ a finite group and $H \leq G$. Then we want to prove $|H| \mid |G|$.\par
+Consider the left cosets of $H$ in $G$. Any one of these has $|H|$ elements. Also, any two of them are disjoint. Any $g \in G$ lies in some $H$-coset, namely $g^H$, so $|G|=|H| \times \> \text{number of distinct H-cosets in G}$ So $|H|$ divides $|G|$.
+\begin{definition}
+The number of left cosets of $H$ in $G$ is called the \emph{index} of $H$ in $G$.
+%add a picture here pls
+\end{definition}
+\emph{Another proof of Lagrange}:
+\begin{theorem}
+Suppose $(G \cdot)$ is a group and $H \leq G$. define the relation ~ on $G$ by
+\[g\sim k \iff g^{-1}k \in H\]
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item ~ is an equivalence relation
+    \item $g~k \iff g^H=k^H$
+\end{enumerate}
+\end{theorem}
+\emph{Proof:}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Question sheet 6
+    \item \begin{align*}
+        &g^{-1}k \in H\\
+        \iff&g^{-1}kH=H\\
+        \iff&kH=gH
+    \end{align*}
+    The ~ equivalence classes are the left $H$-cosets.
+\end{enumerate}
+\begin{example}
+Let $G =S_3$, and $H=<\alpha>, \alpha=\begin{pmatrix}1&2&3\\1&3&2\end{pmatrix}$.
+What are the left $H$-cosets?
+\[
+\begin{array}{|c|c|c|}
+\hline\\
+    e & \beta=\begin{pmatrix}
+    1&2&3\\
+    2&3&1
+    \end{pmatrix}&\gamma=\begin{pmatrix}
+    1&2&3\\
+    3&1&2
+    \end{pmatrix} \\
+    \alpha & \beta\alpha=\begin{pmatrix}
+    1&2&3\\
+    2&1&3
+    \end{pmatrix} & \gamma\alpha=\begin{pmatrix}
+    1&2&3\\
+    3&2&1
+    \end{pmatrix}
+\end{array}
+\]
+\emph{Solution:} We have
+\begin{align*}
+    \beta H& = \{\beta, \beta\alpha\}\\
+    H\beta &= \{\beta, \alpha\beta\}\\
+    \beta H & \neq H\beta\\
+\end{align*}
+\end{example}
+\section{Homomorphisms}
+\begin{definition}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Suppose $(G,\cdot)$ and $(H, \cdot)$ are groups. A function $\phi: G \rightarrow H$ is called a \emph{homomorphism} if
+    \[\forall g_1, g_2 \in G, \phi(g_1g_2)=\phi(g_1)\phi(g_2)\]
+    \item The image of $\phi$ is
+    \[\mathrm{Im}\phi=\{\phi(g):g \in G\}\]
+    and then kernel of $\phi$ is
+    \[\mathrm{Ker}\phi=\{g \in G: \phi(g)=e_h\}\]
+    \item If the homomorphism $\phi$ is a bijection, say $\phi$ is an \emph{isomorphism}. For groups $G,H$ if there exists an isomorphism $\phi: G \rightarrow H$ then we say $G,H$ are \emph{isomorphic}, or write $G \cong H$.
+\end{enumerate}
+\end{definition}
+\begin{lemma}
+Suppose $G,H$ are groups, and $\phi:G \rightarrow H$ is a homomorphism. Then
+\begin{enumerate}[label=\roman*)]
+    \item $\phi(e_G)=e_H$
+    \item $\phi(g^{-1})=(\phi(g))^{-1} \forall g \in G$
+    \item $\mathrm{Im}\phi \leq H, \mathrm{Ker}\phi \leq G$
+\end{enumerate}
+\end{lemma}
+\emph{Proof:}
+\begin{enumerate}[label=\roman*)]
+    \item \begin{align*}
+        \phi(e_G)&=\phi(e_Ge_G)\\
+        &=\phi(e_G)\phi(e_G)\\
+        (h=hh &\implies e_H=h)\\
+        \intertext{so}
+        \phi(e_G)&=e_H
+    \end{align*}
+    \item
+    \begin{align*}
+        e_H\overset{\text{(i)}}{=}\phi(e_H)&=\phi(gg^{-1})\\
+        &=\phi(g)\phi(g^{-1})\\
+        \therefore \phi(g^{-1})&=(\phi(g))^{-1}
+    \end{align*}
+    \item use (something??? 1.16??? My numbering is different D: )
+\end{enumerate}
+\begin{example}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \setcounter{enumi}{0}
+    \item Trivial Examples:
+    \begin{align*}
+        i&: G \rightarrow G\\
+        &i(g)=g 
+    \end{align*}
+    Is the identity homomorphism.
+    \begin{align*}
+        \psi&:G \rightarrow H\\
+        &\psi(g)=e_H \> \forall g \in G
+    \end{align*}
+    \item F is a field, $G=\mathrm{GL}_n(F)$. then
+    \[\det: \mathrm{GL}_n(F) \rightarrow (F^x, \cdot)\]
+    is a homomorphism:
+    \[\det(g_1g_2)=\det(g_1)\det(g_2)\]
+    \item Suppose $(H, \cdot)$ is any group and $h \in H$. Define
+    \begin{align*}
+        \phi&: (\mathbb{Z}, +) \rightarrow H\\
+        &\phi(n)=h^n\\
+        \phi(n+m)&=h^{n+m}=h^nh^m\\
+        &=\phi(n)\phi(m)
+    \end{align*}
+    Therefore $\phi$ is a homomorphism. If $h$ has infinite order, then
+    \[\mathrm{Ker}\phi=\{0\}\]
+    If $h$ has finite order, then
+    \[\mathrm{Ker}\phi=n\mathbb{Z}\]
+    \[\mathrm{Im}\phi=<h>\]
+    \item
+    \[\exp: (\mathbb{R}, +) \rightarrow (\mathbb{R}^{>0}, \cdot)\]
+    Is a homomorphism:
+    \[\exp(x+y)=\exp(x)\exp(y)\]
+    This is an isomorphism
+    \item \[|\>|(\mathbb{C}^x,\cdot) \rightarrow (\mathbb{R}^x,\cdot)\]
+    (Modulus)
+    \[|z_1z_2|=|z_1||z_2|\]
+    Which means it's a homomorphism. The kernel is
+    \[\mathrm{Ker}|\>|=\{z \in \mathbb{C}^x: |z|=1\}\]
+\end{enumerate}
+\end{example}
+\begin{lemma}
+\begin{enumerate}[label=\roman*)]
+    \item A homomorphism $\phi:G\rightarrow H$ is injective if and only if
+    \[\mathrm{Ker}\phi=\{e_G\}\]
+    \item If $\phi: G \rightarrow H$ and $\psi: H \rightarrow K$ are homomorphisms, then
+    \[\psi \circ \phi: G \rightarrow K\]
+    is a homomorphism.
+    \item If $\phi:G \rightarrow H$ is an isomorphism, then $\phi^{-1}:H \rightarrow G$ is an isomorphism.
+\end{enumerate}
+\end{lemma}
+\emph{Proof:} $"\implies"$ We know
+\[\phi(e_G)=e_H\]
+So $e_G \in \mathrm{Ker}\phi$. Injectivity says that $|\mathrm{Ker}\phi| \leq 1$.\par
+$"\impliedby"$: Suppose $\mathrm{Ker}\phi=\{e_G\}$.
+\begin{align*}
+\phi(g_1)&=\phi(g_2) &\underset{\text{3.0.2}}{\implies} \phi(g_1g_2^{-1}) \in \mathrm{Ker}\phi\\
+& \implies g_1g_2^{-1} \in \mathrm{Ker}\phi\\
+&\implies g_1g_2^{-1}=e^G\\
+&\implies g_1=g_2
+\end{align*}
+\begin{theorem}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Suppose $G,H$ are cyclic groups of the same order. The there is an isomorphism $\alpha: G \rightarrow H$.
+    \item If $V_1, V_2$ are non-cyclic groups of order 4, then $V_1 \cong V_2$
+\end{enumerate}
+\end{theorem}
+\emph{Proof:}
+\begin{enumerate}[label=\textcircled{\tiny{\arabic*}}]
+    \item Case 1: Suppose $G,H$ are finite cyclic groups of order $n$. 
+    \begin{align*}
+        G&=<g>\\
+        H&=<h>
+    \end{align*}
+    Define $\alpha:G \rightarrow H$ by $\alpha(g^k)=h^k$ for $k \in \mathbb{Z}$. This is well-defined, i.e.
+    \begin{align*}
+        g^k=g^l &\implies h^k = h^l\\
+        g^k=g^l &\implies g^{k-l}=e^g\\
+        &\implies n \mid k-l\\
+        \intertext{as $g,h$ have the same order $n$}
+        &\implies h^{k-l}=e_H\\
+        &\implies h^k=h^l
+    \end{align*}
+    This is injective too as all arrows reverse :) trust me :)))) This gives $\alpha$ is a bijection, and
+    \begin{align*}
+        \alpha(g^kg^l)&=\alpha(g^{k+l})\\
+        &=h^{k+l}=h^kh^l\\
+        &=\alpha(g^k)\alpha(g^l)
+    \end{align*}
+    so $\alpha$ is a homomorphism $\implies$ isomorphism.
+    \item Case 2: $G,H$ are of infinite order. The only thing we need to change is the proof that $\alpha$ is well defined:
+    \[g^k=g^l \implies g^{k-l}=e_G\]
+    But as $g$ has infinite order, this implies $k-l=0$, i.e. $k=l$.
+\end{enumerate}
+\end{document}
